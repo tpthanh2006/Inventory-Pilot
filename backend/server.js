@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv").config();
 const userRoute = require("./routes/userRoute");
 const app = express();
+const errorHandler = require("./middleware/errorMiddleware");
 
 // Middlewares
 app.use(express.json());
@@ -18,6 +19,9 @@ app.use("/api/users", userRoute);
 app.get("/", (req, res) => {
   res.send("Home Page");
 })
+
+// Error Middleware
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
