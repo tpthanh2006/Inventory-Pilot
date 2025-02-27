@@ -6,6 +6,7 @@ const dotenv = require("dotenv").config();
 const userRoute = require("./routes/userRoute");
 const app = express();
 const errorHandler = require("./middleware/errorMiddleware");
+const cookieParser = require("cookie-parser");
 
 // Middlewares
 app.use(express.json());
