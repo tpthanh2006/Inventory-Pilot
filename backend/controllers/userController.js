@@ -169,7 +169,34 @@ const loginStatus = asyncHandler ( async(req, res) => {
 
 // Update User's Info
 const updateUser = asyncHandler ( async(req, res) => {
-  res.send("user updated");
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    const { name, email, photo, phone, bio } = user;
+
+    user.email = email;
+    user.bio = req.body.bio || bio;
+    user.name = req.body.name || name;
+    user.phone = req.body.phone || phone;
+    user.photo = req.body.photo || photo;
+
+    const updatedUser = await user.save();
+    res.status(200).json({
+      name: updatedUser.name,
+      email: updatedUser.email,
+      photo: updatedUser.photo,
+      phone: updatedUser.phone,
+      bio: updatedUser.bio
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+// Change Password
+const changePassword = asyncHandler ( async(req, res) => {
+  res.send("change pw");
 });
 
 module.exports = { 
@@ -178,5 +205,6 @@ module.exports = {
   logoutUser,
   getUser,
   loginStatus,
-  updateUser
+  updateUser,
+  changePassword
 };
