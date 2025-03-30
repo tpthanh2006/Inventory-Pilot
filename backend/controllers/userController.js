@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler"); // reduce try-catch block
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 // Generate Token
 const generateToken = (id) => {
@@ -233,6 +234,18 @@ const forgotPassword = asyncHandler ( async(req, res) => {
     res.status(404);
     throw new User("User does not exist. Please sign up");
   }
+
+  // Create a Reset Token
+  let resetToken = crypto.randomBytes(32).toString("hex") + user._id;
+  
+  // Hash token before saving to DB
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  //console.log(resetToken, hashedToken);
+
+  res.send("Forgot Password");
 });
 
 module.exports = { 
