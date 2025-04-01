@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 // Generate Token
 const generateToken = (id) => {
@@ -245,7 +246,52 @@ const forgotPassword = asyncHandler ( async(req, res) => {
     .digest("hex");
   //console.log(resetToken, hashedToken);
 
-  res.send("Forgot Password");
+  // Save token to DB
+  await new Token({
+    userId: user._id,
+    token: hashedToken,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 30 * (60 * 1000), // 30' * (60'' * 1000ms)
+  }).save();
+
+  // Make a reset URL
+  const resetUrl = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
+
+  // Reset Email
+  const message = `
+    
+  `
+  const subject = "Reset Your Password - Pilot Inventory";
+  const send_to = user.email;
+  const sent_from = process.env.EMAIL_USER;
+  const reply_to = process.env.EMAIL_USER;
+  const name = user.name;
+  const link = resetUrl;
+  const templateId = "d-cbe79b0799eb46a9b1204bf966d7e309";
+
+  try {
+    await sendEmail(
+      send_to,
+      reply_to,
+      sent_from,
+      templateId,
+      {
+        name: name,
+        link: link,
+        subject: subject
+      }
+    );
+    
+    res.status(200).json({
+      success: true,
+      message: "Reset Email Sent"
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Email not sent, please try again");
+  }
+
+  //res.send("Forgot Password");
 });
 
 module.exports = { 
