@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Product = require("../models/productModel");
 const { fileSizeFormatter } = require("../utils/fileUpload");
 
+// Create a Product
 const createProduct = asyncHandler (async(req, res) => {
   const { name, sku, category, quantity, price, description } = req.body;
 
