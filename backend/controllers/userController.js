@@ -1,9 +1,9 @@
 const asyncHandler = require("express-async-handler"); // reduce try-catch blocks
-const User = require("../models/userModel");
-const Token = require("../models/tokenModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const User = require("../models/userModel");
+const Token = require("../models/tokenModel");
 const sendEmail = require("../utils/sendEmail");
 
 // Generate Token
