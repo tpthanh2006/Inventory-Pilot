@@ -13,7 +13,7 @@ const Login = () => {
         </div>
         <h2>Login</h2>
         <form>
-          <input type="text" placeholder="Email" required name="email" />
+          <input type="email" placeholder="Email" required name="email" />
           <input type="password" placeholder="Password" required name="password" />
           <button type="submit" className="--btn --btn-primary --btn-block">
             Login
