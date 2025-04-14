@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {ToastContainer} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -11,10 +13,24 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Sidebar from "./components/sidebar/Sidebar";
 import Layout from "./components/layout/Layout";
+import { getLoginStatus } from "./services/authService";
+import { SET_LOGIN } from "./redux/features/auth/authSlice";
 
 axios.defaults.withCredentials = true;
 
 function App() {
+  const dispatch = useDispatch();
+
+  // Fix only "DASHBOARD" shown even while refreshing page after login
+  useEffect(() => {
+    async function loginStatus() {
+      const status = await getLoginStatus();
+      dispatch(SET_LOGIN(status));
+    };
+
+    loginStatus();
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <ToastContainer/>
