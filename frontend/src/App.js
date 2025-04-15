@@ -15,6 +15,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Layout from "./components/layout/Layout";
 import { getLoginStatus } from "./services/authService";
 import { SET_LOGIN } from "./redux/features/auth/authSlice";
+import AddProduct from "./pages/addProduct/AddProduct";
 
 axios.defaults.withCredentials = true;
 
@@ -40,13 +41,24 @@ function App() {
         <Route path="/register" element={<Register/>} />
         <Route path="/forgot" element={<Forgot/>} />
         <Route path="/resetpassword/:resetToken" element={<Reset/>} />
+        
         <Route path="/dashboard" element={
-          <Sidebar>
-            <Layout>
-              <Dashboard/>
-            </Layout>
-          </Sidebar>
-        } />
+            <Sidebar>
+              <Layout>
+                <Dashboard/>
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+        <Route path="/add-product" element={
+            <Sidebar>
+              <Layout>
+                <AddProduct/>
+              </Layout>
+            </Sidebar>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
