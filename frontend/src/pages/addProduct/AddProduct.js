@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import ProductForm from '../../components/productForm/ProductForm';
-import { createProduct, selectIsLoading } from '../../redux/features/product/productSlice';
-import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/loader/Loader';
+import ProductForm from '../../components/product/productForm/ProductForm';
+import { createProduct, selectIsLoading } from '../../redux/features/product/productSlice';
 
 const initialState = {
   name: "",

@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 import './ProductForm.scss';
-import Card from '../card/Card';
+import Card from '../../card/Card';
 
 const ProductForm = ({
   product,
