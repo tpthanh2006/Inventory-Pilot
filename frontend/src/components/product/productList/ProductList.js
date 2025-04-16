@@ -3,10 +3,13 @@ import {AiOutlineEye} from 'react-icons/ai'
 import {FaEdit, FaTrashAlt} from 'react-icons/fa'
 import React, { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 import './ProductList.scss'
 import Search from '../../search/Search'
 import { SpinnerImg } from '../../loader/Loader'
+import { deleteProduct, getProducts } from '../../../redux/features/product/productSlice'
 import { FILTER_PRODUCTS, selectFilteredProducts } from '../../../redux/features/product/filterSlice'
 
 const ProductList = ({products, isLoading}) => {
@@ -23,6 +26,29 @@ const ProductList = ({products, isLoading}) => {
     }
 
     return text;
+  };
+
+  // Confirm to Delete a Product
+  const delProduct = async (id) => {
+    await dispatch(deleteProduct(id));
+    await dispatch(getProducts());
+  };
+
+  const confirmDelete = (id) => {
+    confirmAlert({
+      title: "Delete Product",
+      message: "Are you sure to delete this product?",
+      buttons: [
+        {
+          label: "Delete",
+          onClick: () => delProduct(id),
+        },
+        {
+          label: "Cancel",
+          // onClick: () => alert('Click No')
+        },
+      ],
+    });
   };
 
   // Begin Pagination
@@ -103,7 +129,7 @@ const ProductList = ({products, isLoading}) => {
                             <FaEdit size={25} color={'green'} />
                           </span>
                           <span>
-                            <FaTrashAlt size={25} color={'red'} />
+                            <FaTrashAlt size={25} color={'red'} onClick={() => confirmDelete(_id)}/>
                           </span>
                         </td>
                       </tr>
