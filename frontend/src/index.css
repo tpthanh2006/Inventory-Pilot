@@ -497,3 +497,13 @@ a:hover {
   background-color: var(--light-blue);
   height: 100%;
 }
+
+.Toastify {
+  padding: 0;
+  margin: 0;
+}
+
+.Toastify__toast-container {
+  margin-top: 0;
+  padding-top: 0;
+}

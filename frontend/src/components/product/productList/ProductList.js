@@ -1,5 +1,6 @@
 import ReactPaginate from 'react-paginate'
 import {AiOutlineEye} from 'react-icons/ai'
+import { Link } from 'react-router-dom'
 import {FaEdit, FaTrashAlt} from 'react-icons/fa'
 import React, { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
@@ -123,7 +124,9 @@ const ProductList = ({products, isLoading}) => {
 
                         <td className='icons'>
                           <span>
-                            <AiOutlineEye size={25} color={'purple'} />
+                            <Link to={`/product-detail/${_id}`}>
+                              <AiOutlineEye size={25} color={'purple'} />
+                            </Link>
                           </span>
                           <span>
                             <FaEdit size={25} color={'green'} />
