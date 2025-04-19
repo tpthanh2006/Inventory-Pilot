@@ -19,8 +19,13 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: ["http://localhost:3000", "https://inv-pilot.vercel.app"],
+  origin: [
+    "http://localhost:3000", 
+    "https://inventory-pilot-one.vercel.app"
+  ],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

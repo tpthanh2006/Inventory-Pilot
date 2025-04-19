@@ -6,7 +6,8 @@ import {FaPhoneAlt, FaEnvelope, FaTwitter} from 'react-icons/fa'
 
 import './Contact.scss'
 import Card from '../../components/card/Card'
-import { BACKEND_URL } from '../../services/productService'
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Contact = () => {
   const [subject, setSubject] = useState("");
@@ -20,11 +21,16 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/api/contactus/`, data);
+      const response = await axios.post(`${BACKEND_URL}/api/contactus`, data, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       setSubject("");
       setMessage("");
 
-      toast.success(response.message);
+      toast.success(response.data.message); // Fix to access message from response.data
     } catch (error) {
       toast.error(error.message);
     };
