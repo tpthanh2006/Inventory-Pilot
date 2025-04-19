@@ -8,6 +8,7 @@ import { selectUser } from '../../redux/features/auth/authSlice';
 import Loader from '../../components/loader/Loader';
 import Card from '../../components/card/Card';
 import { updateUser } from '../../services/authService';
+import ChangePassword from '../../components/changePassword/ChangePassword';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -171,7 +172,9 @@ const EditProfile = () => {
                 </div>
               </span>
             </form>
-          </Card>
+      </Card>
+      <br/>
+      <ChangePassword />
     </div>
   )
 }

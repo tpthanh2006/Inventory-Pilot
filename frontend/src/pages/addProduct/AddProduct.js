@@ -35,7 +35,7 @@ const AddProduct = () => {
     setImagePreview(URL.createObjectURL(e.target.files[0]));
   };
 
-  const generateSKU = async (category) => {
+  const generateSKU = (category) => {
     const letter = category.slice(0, 3).toUpperCase();
     const number = Date.now();
     
