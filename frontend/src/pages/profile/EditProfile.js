@@ -9,7 +9,6 @@ import Loader from '../../components/loader/Loader';
 import Card from '../../components/card/Card';
 import { updateUser } from '../../services/authService';
 
-
 const EditProfile = () => {
   const navigate = useNavigate();
 
