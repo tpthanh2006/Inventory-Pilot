@@ -1,18 +1,30 @@
-import React, { useState } from 'react'
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 
 import './Profile.scss'
-import { useSelector } from 'react-redux';
 import { selectUser } from '../../redux/features/auth/authSlice';
 import Loader from '../../components/loader/Loader';
 import Card from '../../components/card/Card';
-import { Link } from 'react-router-dom';
+import { updateUser } from '../../services/authService';
+
 
 const EditProfile = () => {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [profileImage, setProfileImage] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
 
   const user = useSelector(selectUser);
+  const { email } = user;
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/profile");
+    }
+  }, [email, navigate])
 
   const initialState = {
     name: user?.name,
@@ -35,6 +47,56 @@ const EditProfile = () => {
 
   const saveProfile = async (e) => {
     e.preventDefault();
+    
+    setIsLoading(true);
+    try {
+      // Handle image upload
+      let imageURL;
+      if (
+        profileImage &&
+        (
+          profileImage.type === "image/png" ||
+          profileImage.type === "image/jpg" ||
+          profileImage.type === "image/jpeg"
+        )
+      ) {
+        const image = new FormData();
+        image.append("file", profileImage);
+        image.append("cloud_name", "dphav0gho");
+        image.append("upload_preset", "inv3ntoryp1lot");
+
+        // Save image to Cloudinary
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dphav0gho/image/upload",
+          {
+            method: "post",
+            body: image
+          }
+        );
+        
+        const imgData = await response.json();
+        imageURL = imgData.url.toString();
+      }
+
+      // Save Profile
+      const formData = {
+        name: profile.name,
+        phone: profile.phone,
+        bio: profile.bio,
+        photo: profileImage ? imageURL : profile.photo
+      };
+
+      const data = await updateUser(formData);
+      console.log(data);
+      toast.success("User updated successfully");
+      navigate("/profile");
+      setIsLoading(false);
+
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      toast.error();
+    }
   };
 
   return (
@@ -103,12 +165,10 @@ const EditProfile = () => {
                   />
                 </p>
 
-                <div>
-                  <Link to="/edit-profile">
-                    <button className='--btn --btn-primary'>
-                      Edit Profile
-                    </button>
-                  </Link>
+                <div>=
+                  <button className='--btn --btn-primary'>
+                    Edit Profile
+                  </button>
                 </div>
               </span>
             </form>
