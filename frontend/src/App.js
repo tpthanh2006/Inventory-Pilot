@@ -21,6 +21,7 @@ import EditProduct from "./pages/editProduct/EditProduct";
 import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/profile/EditProfile";
 import Contact from "./pages/contact/Contact";
+import LoginWithCode from "./pages/auth/LoginWithCode";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -47,6 +48,7 @@ function App() {
         <Route path="/register" element={<Register/>} />
         <Route path="/forgot" element={<Forgot/>} />
         <Route path="/resetpassword/:resetToken" element={<Reset/>} />
+        <Route path="/loginwithcode/:email" element={<LoginWithCode/>} />
         
         <Route path="/dashboard" element={
             <Sidebar>

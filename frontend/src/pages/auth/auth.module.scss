@@ -37,10 +37,6 @@
           box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
           border-bottom: 3px solid #55c57a;
         }
-
-        &:focus:invalid {
-          border-bottom: 3px solid #ff7730;
-        }
       }
       .links {
         display: flex;
