@@ -6,6 +6,7 @@ import { Link, useParams } from 'react-router-dom'
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import { resetPassword } from '../../services/authService'
+import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
   password: "",
@@ -60,7 +61,7 @@ const Reset = () => {
           </div>
           <h2>Reset Password</h2>
           <form onSubmit={reset}>
-            <input
+            <PasswordInput 
               type="password"
               placeholder="New Password"
               required
@@ -68,14 +69,21 @@ const Reset = () => {
               value={password}
               onChange={handleInputChange}
             />
-            <input
+
+            <PasswordInput 
               type="password"
               placeholder="Confirm New Password"
               required
               name="password2"
               value={password2}
               onChange={handleInputChange}
+              onPaste={(e) => {
+                e.preventDefault();
+                toast.error("Cannot paste into this field");
+                return false;
+              }}
             />
+            
             <button type="submit" className="--btn --btn-primary --btn-block">
               Reset Password
             </button>

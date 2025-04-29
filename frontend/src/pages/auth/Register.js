@@ -11,6 +11,7 @@ import Card from '../../components/card/Card'
 import { registerUser, validateEmail } from '../../services/authService'
 import {SET_LOGIN, SET_NAME} from "../../redux/features/auth/authSlice"
 import Loader from "../../components/loader/Loader"
+import PasswordInput from "../../components/passwordInput/PasswordInput"
 
 const initialState = {
   name: "",
@@ -139,6 +140,7 @@ const Register = () => {
               value={name}
               onChange={handleInputChange}
             />
+
             <input
               type="email"
               placeholder="Email"
@@ -147,7 +149,8 @@ const Register = () => {
               value={email}
               onChange={handleInputChange}
             />
-            <input
+
+            <PasswordInput 
               type="password"
               placeholder="Password"
               required
@@ -155,13 +158,19 @@ const Register = () => {
               value={password}
               onChange={handleInputChange}
             />
-            <input
+
+            <PasswordInput 
               type="password"
               placeholder="Confirm Password"
               required
               name="password2"
               value={password2}
               onChange={handleInputChange}
+              onPaste={(e) => {
+                e.preventDefault();
+                toast.error("Cannot paste into this field");
+                return false;
+              }}
             />
 
             {/* Password Strength */}

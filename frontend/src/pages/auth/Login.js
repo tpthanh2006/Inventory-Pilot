@@ -9,6 +9,7 @@ import Card from '../../components/card/Card'
 import Loader from '../../components/loader/Loader'
 import { loginUser, validateEmail } from '../../services/authService'
 import { SET_LOGIN, SET_NAME } from '../../redux/features/auth/authSlice'
+import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
   email: "",
@@ -85,7 +86,8 @@ const Login = () => {
               value={email}
               onChange={handleInputChange}
             />
-            <input
+
+            <PasswordInput 
               type="password"
               placeholder="Password"
               required
