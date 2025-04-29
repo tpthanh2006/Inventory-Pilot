@@ -22,6 +22,7 @@ import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/profile/EditProfile";
 import Contact from "./pages/contact/Contact";
 import LoginWithCode from "./pages/auth/LoginWithCode";
+import Verify from "./pages/auth/Verify";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -99,6 +100,15 @@ function App() {
             <Sidebar>
               <Layout>
                 <EditProfile />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+        <Route path="/verify/:verificationToken" element={
+            <Sidebar>
+              <Layout>
+                <Verify />
               </Layout>
             </Sidebar>
           }
