@@ -6,9 +6,13 @@ const tokenSchema = mongoose.Schema({
     required: true,
     ref: "User",
   },
-  token: {
+  token: { // can be login or reset token
     type: String,
-    required: true,
+    default: "",
+  },
+  vToken: {
+    type: String,
+    default: "",
   },
   createdAt: {
     type: Date,

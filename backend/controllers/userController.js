@@ -11,6 +11,11 @@ const generateToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: "1d"});
 };
 
+// Hash Token
+const hashToken = (token) => {
+  return crypto.createHash("sha256").update(token.toString()).digest("hex");
+};
+
 // Register User
 const registerUser = asyncHandler( async (req, res) => {
   const { name, email, password } = req.body;
@@ -246,10 +251,7 @@ const forgotPassword = asyncHandler ( async(req, res) => {
   let resetToken = crypto.randomBytes(32).toString("hex") + user._id;
   
   // Hash token before saving to DB
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+  const hashedToken = hashToken(resetToken);
   //console.log(resetToken, hashedToken);
 
   // Save token to DB
@@ -264,9 +266,6 @@ const forgotPassword = asyncHandler ( async(req, res) => {
   const resetUrl = `${process.env.FRONTEND_URL}/resetpassword/${resetToken}`;
 
   // Reset Email
-  const message = `
-    
-  `
   const subject = "Reset Your Password - Pilot Inventory";
   const send_to = user.email;
   const sent_from = process.env.EMAIL_USER;
@@ -306,10 +305,7 @@ const resetPassword = asyncHandler ( async(req, res) => {
   const { resetToken } = req.params;
 
   // Hash token to compare to tokens in DB
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+  const hashedToken = hashToken(resetToken);
 
   // Find token in DB
   const userToken = await Token.findOne({
@@ -332,6 +328,112 @@ const resetPassword = asyncHandler ( async(req, res) => {
   })
 });
 
+// Send Verification Email
+const sendVerificationEmail = asyncHandler ( async(req, res) => {
+  const user = await User.findById(req.user._id);
+
+  // User Validation
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+
+  if (user.isVerified) {
+    res.status(400);
+    throw new Error("User already verified");
+  }
+
+  // Delete token if already exists in DB
+  let token = await Token.findOne({ userId: user._id });
+  if (token) {
+    await token.deleteOne();
+  }
+
+  // Create verification token and save
+  const verificationToken = crypto.randomBytes(32).toString("hex") + user._id;
+  
+  // Hash token and save
+  const hashedToken = hashToken(verificationToken);
+  await new Token({
+    userId: user._id,
+    vToken: hashedToken,
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 60 * (60 * 1000) // 60 mins
+  }).save();
+
+  // Construct verification URL
+  const verificationURL = `${process.env.FRONTEND_URL}/verify/${verificationToken}`;
+
+  // Send verification email
+  const subject = "Verify Your Account - Pilot Inventory";
+  const send_to = user.email;
+  const sent_from = process.env.EMAIL_USER;
+  const reply_to = process.env.EMAIL_USER;
+  const name = user.name;
+  const link = verificationURL;
+  const templateId = "d-f525938f91294ef19feeda21d8024e7e";
+
+  try {
+    await sendEmail(
+      send_to,
+      reply_to,
+      sent_from,
+      templateId,
+      {
+        name: name,
+        link: link,
+        subject: subject
+      }
+    );
+    
+    res.status(200).json({
+      success: true,
+      message: "Verification Email Sent"
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Email not sent, please try again");
+  }
+
+  //console.log(verificationURL);
+  //res.send("Verifcation email");
+});
+
+// Verify User
+const verifyUser = asyncHandler( async(req, res) => {
+  const { verificationToken } = req.params;
+  const hashedToken = hashToken(verificationToken);
+  const userToken = await Token.findOne({
+    vToken: hashedToken,
+    expiresAt: {$gt: Date.now()}
+  });
+
+  // Token validation
+  if (!userToken) {
+    res.status(404);
+    throw new Error("Invalid or expired token");
+  }
+
+  // Find user
+  const user = await User.findOne({_id: userToken.userId});
+
+  // User validation
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  }
+  if (user.isVerified) {
+    res.status(400);
+    throw new Error("User is already verified");
+  }
+
+  user.isVerified = true;
+  await user.save();
+  res.status(200).json({message: "Account Verified Successful"});
+
+  //res.send('user verifying');
+});
+
 module.exports = { 
   registerUser,
   loginUser,
@@ -341,5 +443,7 @@ module.exports = {
   updateUser,
   changePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  sendVerificationEmail,
+  verifyUser
 };
