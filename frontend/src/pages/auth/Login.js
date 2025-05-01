@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import Loader from '../../components/loader/Loader'
-import { loginUser, validateEmail } from '../../services/authService'
+import authService from '../../services/authService'
 import { SET_LOGIN, SET_NAME } from '../../redux/features/auth/authSlice'
 import PasswordInput from '../../components/passwordInput/PasswordInput'
 
@@ -37,7 +37,7 @@ const Login = () => {
       return toast.error("All fields are required");
     }
         
-    if (!validateEmail(email)) {
+    if (!authService.validateEmail(email)) {
       return toast.error("Please enter a valid email");
     }
     
@@ -52,7 +52,7 @@ const Login = () => {
     
     setIsLoading(true);
     try {
-      const data = await loginUser(userData);
+      const data = await authService.loginUser(userData);
 
       await dispatch(SET_LOGIN(true));
       await dispatch(SET_NAME(data.name));

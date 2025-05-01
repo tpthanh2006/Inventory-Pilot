@@ -7,7 +7,7 @@ import './Profile.scss'
 import { selectUser } from '../../redux/features/auth/authSlice';
 import Loader from '../../components/loader/Loader';
 import Card from '../../components/card/Card';
-import { updateUser } from '../../services/authService';
+import authService from '../../services/authService';
 import ChangePassword from '../../components/changePassword/ChangePassword';
 
 const EditProfile = () => {
@@ -86,7 +86,7 @@ const EditProfile = () => {
         photo: profileImage ? imageURL : profile.photo
       };
 
-      const data = await updateUser(formData);
+      const data = await authService.updateUser(formData);
       console.log(data);
       toast.success("User updated successfully");
       navigate("/profile");

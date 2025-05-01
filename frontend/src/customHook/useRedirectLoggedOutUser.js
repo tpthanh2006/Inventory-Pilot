@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { getLoginStatus } from '../services/authService';
+import authService from '../services/authService';
 import { SET_LOGIN } from '../redux/features/auth/authSlice';
 
 const useRedirectLoggedOutUser = (path) => {
@@ -12,7 +12,7 @@ const useRedirectLoggedOutUser = (path) => {
   
   useEffect(() => {
     const redirectLoggedOutUser = async () => {
-      const isLoggedIn = await getLoginStatus();
+      const isLoggedIn = await authService.getLoginStatus();
       await dispatch(SET_LOGIN(isLoggedIn));
 
       if (!isLoggedIn) {

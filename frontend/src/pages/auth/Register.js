@@ -8,7 +8,7 @@ import { TiUserAddOutline } from 'react-icons/ti'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
-import { registerUser, validateEmail } from '../../services/authService'
+import authService from '../../services/authService'
 import {SET_LOGIN, SET_NAME} from "../../redux/features/auth/authSlice"
 import Loader from "../../components/loader/Loader"
 import PasswordInput from "../../components/passwordInput/PasswordInput"
@@ -87,7 +87,7 @@ const Register = () => {
       return toast.error("All fields are required");
     }
     
-    if (!validateEmail(email)) {
+    if (!authService.validateEmail(email)) {
       return toast.error("Please enter a valid email");
     }
 
@@ -107,7 +107,7 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      const data = await registerUser(userData);
+      const data = await authService.registerUser(userData);
 
       await dispatch(SET_LOGIN(true));
       await dispatch(SET_NAME(data.name));

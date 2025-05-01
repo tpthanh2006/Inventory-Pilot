@@ -13,7 +13,7 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Sidebar from "./components/sidebar/Sidebar";
 import Layout from "./components/layout/Layout";
-import { getLoginStatus } from "./services/authService";
+import authService from "./services/authService";
 import { SET_LOGIN } from "./redux/features/auth/authSlice";
 import AddProduct from "./pages/addProduct/AddProduct";
 import ProductDetail from "./components/product/productDetail/ProductDetail";
@@ -33,7 +33,7 @@ function App() {
   // Fix only "DASHBOARD" shown even while refreshing page after login
   useEffect(() => {
     async function loginStatus() {
-      const status = await getLoginStatus();
+      const status = await authService.getLoginStatus();
       dispatch(SET_LOGIN(status));
     };
 

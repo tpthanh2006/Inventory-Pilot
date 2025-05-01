@@ -2,14 +2,14 @@ import axios from "axios"
 import {toast} from "react-toastify"
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
-export const validateEmail = (email) => {
+const validateEmail = (email) => {
   return email.match(
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
 };
 
 // Register User
-export const registerUser = async (userData) => {
+const registerUser = async (userData) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/users/register`, userData);
     if (response.statusText === "OK") {
@@ -27,7 +27,7 @@ export const registerUser = async (userData) => {
 };
 
 // Login User
-export const loginUser = async (userData) => {
+const loginUser = async (userData) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/users/login`, userData);
     if (response.statusText === "OK") {
@@ -45,7 +45,7 @@ export const loginUser = async (userData) => {
 };
 
 // Logout User
-export const logoutUser = async () => {
+const logoutUser = async () => {
   try {
     const response = await axios.get(`${BACKEND_URL}/api/users/logout`);
     if (response.statusText === "OK") {
@@ -61,7 +61,7 @@ export const logoutUser = async () => {
 };
 
 // Forgot Password
-export const forgotPassword = async (userData) => {
+const forgotPassword = async (userData) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/users/forgotpassword`, userData);
     toast.success(response.data.message);
@@ -75,7 +75,7 @@ export const forgotPassword = async (userData) => {
 };
 
 // Reset Password
-export const resetPassword = async (userData, resetToken) => {
+const resetPassword = async (userData, resetToken) => {
   try {
     const response = await axios.put(`${BACKEND_URL}/api/users/resetpassword/${resetToken}`, userData);
     
@@ -90,7 +90,7 @@ export const resetPassword = async (userData, resetToken) => {
 };
 
 // Get Login Status
-export const getLoginStatus = async () => {
+const getLoginStatus = async () => {
   try {
     const response = await axios.get(`${BACKEND_URL}/api/users/loggedin`);
     
@@ -105,7 +105,7 @@ export const getLoginStatus = async () => {
 };
 
 // Get User Profile
-export const getUser = async () => {
+const getUser = async () => {
   try {
     const response = await axios.get(`${BACKEND_URL}/api/users/getuser`);
     
@@ -120,7 +120,7 @@ export const getUser = async () => {
 };
 
 // Update User Profile
-export const updateUser = async (formData) => {
+const updateUser = async (formData) => {
   try {
     const response = await axios.patch(`${BACKEND_URL}/api/users/updateuser`, formData);
     
@@ -135,7 +135,7 @@ export const updateUser = async (formData) => {
 };
 
 // Change Password
-export const changePassword = async (formData) => {
+const changePassword = async (formData) => {
   try {
     const response = await axios.patch(`${BACKEND_URL}/api/users/changepassword`, formData);
     
@@ -148,3 +148,34 @@ export const changePassword = async (formData) => {
     toast.error(message);
   }
 };
+
+// Send Verification Email
+const sendVerificationEmail = async() => {
+  try {
+    const response = await axios.post(`${BACKEND_URL}/api/users/sendverificationemail`);
+    
+    return response.data.message;
+  } catch (error) {
+    const message = (
+      error.response && error.response.data && error.response.data.message
+    ) || error.message || error.toString();
+
+    toast.error(message);
+  }
+};
+
+const authService = {
+  sendVerificationEmail,
+  changePassword, 
+  updateUser,
+  getUser,
+  getLoginStatus,
+  resetPassword,
+  forgotPassword,
+  loginUser,
+  logoutUser,
+  registerUser,
+  validateEmail
+};
+
+export default authService;

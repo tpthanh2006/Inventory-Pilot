@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import './ChangePassword.scss'
 import Card from '../card/Card'
-import { changePassword } from '../../services/authService'
+import authService from '../../services/authService'
 
 const initialState = {
   oldPassword: "",
@@ -35,7 +35,7 @@ const ChangePassword = () => {
       password
     };
 
-    const data = await changePassword(formData);
+    const data = await authService.changePassword(formData);
     toast.success(data);
     navigate("/profile");
   };

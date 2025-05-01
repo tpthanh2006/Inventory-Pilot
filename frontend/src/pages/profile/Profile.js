@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import "./Profile.scss"
 import useRedirectLoggedOutUser from '../../customHook/useRedirectLoggedOutUser'
 import { useDispatch } from 'react-redux';
-import { getUser } from '../../services/authService'
+import authService from '../../services/authService'
 import { SET_NAME, SET_USER } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 import Card from '../../components/card/Card'
@@ -20,7 +20,7 @@ const Profile = () => {
     setIsLoading(true);
 
     async function getUserData() {
-      const data = await getUser();
+      const data = await authService.getUser();
       console.log(data);
 
       setProfile(data);

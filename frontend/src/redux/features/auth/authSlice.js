@@ -1,4 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import authService from '../../../services/authService';
+import { toast } from 'react-toastify';
+
 const name = JSON.parse(localStorage.getItem("name"));
 
 const initialState = {
@@ -13,6 +16,21 @@ const initialState = {
   },
   userID: ""
 }
+
+// Send Verification Email
+export const sendVerificationEmail = createAsyncThunk(
+  "auth/sendVerificationEmail",
+  async (_, thunkAPI) => {
+    try {
+      return await authService.sendVerificationEmail();
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -34,6 +52,28 @@ const authSlice = createSlice({
       state.user.photo = profile.photo
     }
   },
+  extraReducers: (builder) => {
+    builder
+      // Send Verification Email
+      .addCase(sendVerificationEmail.pending, (state) => {
+          state.isLoading = true
+      })
+      .addCase(sendVerificationEmail.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+
+          state.message = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(sendVerificationEmail.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+  
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+  }
 });
 
 export const {SET_LOGIN, SET_NAME, SET_USER} = authSlice.actions

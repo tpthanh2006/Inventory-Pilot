@@ -6,7 +6,7 @@ import { AiOutlineMail } from 'react-icons/ai'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
-import { forgotPassword, loginUser, validateEmail } from '../../services/authService'
+import authService from '../../services/authService'
 
 const LoginWithCode = () => {
   const [loginCode, setLoginCode] = useState("");
@@ -19,7 +19,7 @@ const LoginWithCode = () => {
             <GrInsecure size={35} color="#999" />
           </div>
           <h2>Enter Access Code</h2>
-          <form onSubmit={loginUser}>
+          <form onSubmit={authService.loginUser()}>
             <input
               type="text"
               placeholder="Access Code"

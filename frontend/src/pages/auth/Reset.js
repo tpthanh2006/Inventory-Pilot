@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
-import { resetPassword } from '../../services/authService'
+import authService from '../../services/authService'
 import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
@@ -43,7 +43,7 @@ const Reset = () => {
     };
     
     try {
-      const data = await resetPassword(userData, resetToken);
+      const data = await authService.resetPassword(userData, resetToken);
       toast.success(data.message);
     } catch (error) {
       console.log(error.message);

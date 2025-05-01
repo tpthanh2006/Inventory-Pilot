@@ -5,7 +5,7 @@ import { AiOutlineMail } from 'react-icons/ai'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
-import { forgotPassword, validateEmail } from '../../services/authService'
+import authService from '../../services/authService'
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ const Forgot = () => {
       return toast.error("All fields are required");
     }
 
-    if (!validateEmail(email)) {
+    if (!authService.validateEmail(email)) {
       return toast.error("Please enter a valid email")
     }
 
@@ -26,7 +26,7 @@ const Forgot = () => {
       email
     };
 
-    await forgotPassword(userData);
+    await authService.forgotPassword(userData);
     setEmail("");
   };
 
