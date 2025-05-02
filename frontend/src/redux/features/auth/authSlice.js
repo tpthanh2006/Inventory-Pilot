@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 const name = JSON.parse(localStorage.getItem("name"));
 
 const initialState = {
-  isLoggedIn: false,
   name: name ? name : "",
   user: {
     name: "",
@@ -13,8 +12,15 @@ const initialState = {
     phone: "",
     bio: "",
     photo: "",
+    isVerified: false,
   },
-  userID: ""
+  userID: "",
+  message: "",
+
+  isError: false,
+  isSuccess: false,
+  isLoading: false,
+  isLoggedIn: false,
 }
 
 // Send Verification Email
@@ -36,6 +42,12 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    RESET(state) {
+      state.isError = false;
+      state.isSuccess = false;
+      state.isLoading = false;
+      state.message = "";
+    },
     SET_LOGIN(state, action) {
       state.isLoggedIn = action.payload
     },
@@ -76,7 +88,7 @@ const authSlice = createSlice({
   }
 });
 
-export const {SET_LOGIN, SET_NAME, SET_USER} = authSlice.actions
+export const {SET_LOGIN, SET_NAME, SET_USER, RESET} = authSlice.actions
 
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
 export const selectName = (state) => state.auth.name;

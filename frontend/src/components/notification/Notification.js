@@ -2,14 +2,14 @@ import React from 'react'
 
 import "./Notification.scss"
 import { useDispatch } from 'react-redux';
-import { sendVerificationEmail } from '../../redux/features/auth/authSlice';
+import { sendVerificationEmail, RESET } from '../../redux/features/auth/authSlice';
 
 const Notification = () => {
   const dispatch = useDispatch();
 
   const sendVerEmail = async () => {
-    await dispatch(sendVerificationEmail);
-    //await dispatch(RESET());
+    await dispatch(sendVerificationEmail());
+    await dispatch(RESET());
   };
 
   return (

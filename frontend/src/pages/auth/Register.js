@@ -9,7 +9,7 @@ import { TiUserAddOutline } from 'react-icons/ti'
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import authService from '../../services/authService'
-import {SET_LOGIN, SET_NAME} from "../../redux/features/auth/authSlice"
+import {sendVerificationEmail, SET_LOGIN, SET_NAME} from "../../redux/features/auth/authSlice"
 import Loader from "../../components/loader/Loader"
 import PasswordInput from "../../components/passwordInput/PasswordInput"
 
@@ -108,9 +108,11 @@ const Register = () => {
     setIsLoading(true);
     try {
       const data = await authService.registerUser(userData);
-
+      
       await dispatch(SET_LOGIN(true));
       await dispatch(SET_NAME(data.name));
+      await dispatch(sendVerificationEmail());
+
       navigate("/dashboard");
 
       setIsLoading(false);
