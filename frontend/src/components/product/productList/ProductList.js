@@ -86,7 +86,9 @@ const ProductList = ({products, isLoading}) => {
           <span>
             <Search
               value={search}
-              onChange={(e) => setSearch(e.target.value)} />
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={"Search Products"}
+            />
           </span>
         </div>
 

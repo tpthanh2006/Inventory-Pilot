@@ -23,6 +23,7 @@ import EditProfile from "./pages/profile/EditProfile";
 import Contact from "./pages/contact/Contact";
 import LoginWithCode from "./pages/auth/LoginWithCode";
 import Verify from "./pages/auth/Verify";
+import UserList from "./pages/userList/UserList";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -118,6 +119,15 @@ function App() {
             <Sidebar>
               <Layout>
                 <Contact />
+              </Layout>
+            </Sidebar>
+          }
+        />
+
+        <Route path="/users" element={
+            <Sidebar>
+              <Layout>
+                <UserList />
               </Layout>
             </Sidebar>
           }

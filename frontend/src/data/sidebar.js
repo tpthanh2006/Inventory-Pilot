@@ -1,4 +1,4 @@
-import { FaTh, FaRegChartBar, FaCommentAlt } from "react-icons/fa";
+import { FaTh, FaRegChartBar, FaCommentAlt, FaHospitalUser } from "react-icons/fa";
 import { BiImageAdd } from "react-icons/bi";
 
 const menu = [
@@ -30,6 +30,11 @@ const menu = [
     title: "Report Bug",
     icon: <FaCommentAlt />,
     path: "/contact-us",
+  },
+  {
+    title: "User List",
+    icon: <FaHospitalUser />,
+    path: "/users",
   },
 ];
 
