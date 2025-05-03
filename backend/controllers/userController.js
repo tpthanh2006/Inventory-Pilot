@@ -143,14 +143,15 @@ const logoutUser = asyncHandler( async(req, res) => {
 const getUser = asyncHandler( async(req, res) => {
   const user = await User.findById(req.user._id);
   if (user) {
-      const { _id, name, email, photo, phone, bio } = user;
+      const { _id, name, email, photo, phone, bio, isVerified } = user;
       res.status(200).json({
         _id,
         name,
         email,
         photo,
         phone,
-        bio
+        bio,
+        isVerified
       });
   } else {
     res.status(400);
@@ -429,7 +430,7 @@ const verifyUser = asyncHandler( async(req, res) => {
 
   user.isVerified = true;
   await user.save();
-  res.status(200).json({message: "Account Verified Successful"});
+  res.status(200).json({message: "Account verified successful"});
 
   //res.send('user verifying');
 });

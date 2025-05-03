@@ -38,6 +38,21 @@ export const sendVerificationEmail = createAsyncThunk(
   }
 );
 
+// Verify User
+export const verifyUser = createAsyncThunk(
+  "auth/verifyUser",
+  async (verificationToken, thunkAPI) => {
+    try {
+      return await authService.verifyUser(verificationToken);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -57,11 +72,13 @@ const authSlice = createSlice({
     },
     SET_USER(state, action) {
       const profile = action.payload
+      
       state.user.name = profile.name
       state.user.email = profile.email
       state.user.phone = profile.phone
       state.user.bio = profile.bio
       state.user.photo = profile.photo
+      state.user.isVerified = profile.isVerified
     }
   },
   extraReducers: (builder) => {
@@ -82,6 +99,26 @@ const authSlice = createSlice({
           state.isLoading = false;
           state.isError = true;
   
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Verify User
+      .addCase(verifyUser.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(verifyUser.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+
+          state.message = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(verifyUser.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+
           state.message = action.payload;
           toast.error(action.payload);
       })

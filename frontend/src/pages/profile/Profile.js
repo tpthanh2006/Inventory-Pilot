@@ -8,24 +8,13 @@ import authService from '../../services/authService'
 import { SET_NAME, SET_USER } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 import Card from '../../components/card/Card'
-import Notification from '../../components/notification/Notification';
+import Notification from '../../components/notification/Notification'
 
 const Profile = () => {
   useRedirectLoggedOutUser("/login");
   const dispatch = useDispatch();
   
-  const { user } = useSelector(
-    (state) => state.auth
-  );
-  const initialState = {
-    name: user?.name || "",
-    email: user?.email || "",
-    phone: user?.phone || "",
-    bio: user?.bio || "",
-    isVerified: user?.isVerified || false,
-  }
-
-  const [profile, setProfile] = useState(initialState);
+  const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -33,22 +22,24 @@ const Profile = () => {
 
     async function getUserData() {
       const data = await authService.getUser();
-      console.log(data);
-
-      setProfile(data);
+      //console.log(data);
+      
+      if (data) {
+        setProfile(data);
+        await dispatch(SET_USER(data));
+        await dispatch(SET_NAME(data.name));
+      }
+      
       setIsLoading(false);
-
-      await dispatch(SET_USER(data));
-      await dispatch(SET_NAME(data.name));
     };
 
     getUserData();
-  }, [dispatch]);
+  }, []);
 
   return (
     <div className='profile --my2'>
       {isLoading && <SpinnerImg />}
-      {!profile.isVerified && <Notification />}
+      {profile && !profile.isVerified && <Notification />}
 
       <>
         {!isLoading && profile === null ? (
@@ -64,23 +55,23 @@ const Profile = () => {
 
             <span className="profile-data">
               <p>
-                <b>Name: </b> {profile.name}
+                <b>Name: </b> {profile?.name}
               </p>
 
               <p>
-                <b>Email: </b> {profile.email}
+                <b>Email: </b> {profile?.email}
               </p>
 
               <p>
-                <b>Phone: </b> {profile.phone}
+                <b>Phone: </b> {profile?.phone}
               </p>
 
               <p>
-                <b>Bio: </b> {profile.bio}
+                <b>Bio: </b> {profile?.bio}
               </p>
 
               <p>
-                <b>Status: </b> {profile.isVerified ? "Verified" : "Unverified"}
+                <b>Status: </b> {profile?.isVerified ? "Verified" : "Unverified"}
               </p>
 
               <div>

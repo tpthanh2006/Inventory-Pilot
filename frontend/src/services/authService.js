@@ -150,9 +150,24 @@ const changePassword = async (formData) => {
 };
 
 // Send Verification Email
-const sendVerificationEmail = async() => {
+const sendVerificationEmail = async () => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/users/sendverificationemail`);
+    
+    return response.data.message;
+  } catch (error) {
+    const message = (
+      error.response && error.response.data && error.response.data.message
+    ) || error.message || error.toString();
+
+    toast.error(message);
+  }
+};
+
+// Verify User
+const verifyUser = async (verificationToken) => {
+  try {
+    const response = await axios.patch(`${BACKEND_URL}/api/users/verifyuser/${verificationToken}`);
     
     return response.data.message;
   } catch (error) {
@@ -174,6 +189,7 @@ const authService = {
   forgotPassword,
   loginUser,
   logoutUser,
+  verifyUser,
   registerUser,
   validateEmail
 };
