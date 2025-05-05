@@ -168,7 +168,14 @@ const getUser = asyncHandler( async(req, res) => {
 
 // Get Users
 const getUsers = asyncHandler( async(req, res) => {
-  res.send('get all users');
+  const users = await User.find().sort("-createdAt").select("-password");
+
+  if (!users) {
+    res.status(500);
+    throw new Error("Something went wrong. Please try again")
+  };
+
+  res.status(200).json(users);
 });
 
 // Get Login Status
@@ -466,7 +473,22 @@ const deleteUser = asyncHandler( async(req, res) => {
 
 // Change Role
 const changeRole = asyncHandler( async(req, res) => {
-  res.send("Change Role");
+  const { role, id } = req.body;
+
+  // Find the user by ID
+  const user = await User.findById(id);
+  
+  if (!user) {
+    res.status(500);
+    throw new Error("User not found");
+  };
+
+  user.role = role;
+  await user.save();
+
+  res.status(200).json({
+    message: `User updated to ${role}`
+  });
 });
 
 module.exports = { 

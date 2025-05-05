@@ -5,7 +5,7 @@ const { createProduct, getProducts, getProduct, deleteProduct, updateProduct } =
 const router = express.Router();
 
 router.post("", protect, upload.single("image"), createProduct);
-router.patch("/:id", protect, staffOnly, upload.single("image"), updateProduct);
+router.patch("/:id", protect, upload.single("image"), updateProduct);
 router.get("/", protect, staffOnly, getProducts);
 router.get("/:id", protect, getProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
