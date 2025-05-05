@@ -58,7 +58,7 @@ const registerUser = asyncHandler( async (req, res) => {
       secure: true
     });
 
-    const { _id, name, email, photo, phone, bio } = user;
+    const { _id, name, email, photo, phone, bio, role, isVerified } = user;
     res.status(201).json({
       _id,
       name,
@@ -66,7 +66,9 @@ const registerUser = asyncHandler( async (req, res) => {
       photo,
       phone,
       bio,
-      token
+      token, 
+      role, 
+      isVerified
     });
   } else {
     res.status(400);
@@ -142,6 +144,7 @@ const logoutUser = asyncHandler( async(req, res) => {
 // Get User Data
 const getUser = asyncHandler( async(req, res) => {
   const user = await User.findById(req.user._id);
+
   if (user) {
       const { _id, name, email, photo, phone, bio, role, isVerified } = user;
       res.status(200).json({
@@ -182,13 +185,14 @@ const updateUser = asyncHandler ( async(req, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
-    const { name, email, photo, phone, bio } = user;
+    const { name, email, photo, phone, bio, role, isVerified } = user;
 
     user.email = email;
     user.bio = req.body.bio || bio;
     user.name = req.body.name || name;
     user.phone = req.body.phone || phone;
     user.photo = req.body.photo || photo;
+    user.role = req.body.role || role;
 
     const updatedUser = await user.save();
     res.status(200).json({
@@ -196,7 +200,9 @@ const updateUser = asyncHandler ( async(req, res) => {
       email: updatedUser.email,
       photo: updatedUser.photo,
       phone: updatedUser.phone,
-      bio: updatedUser.bio
+      bio: updatedUser.bio,
+      role: updatedUser.role,
+      isVerified: updatedUser.isVerified,
     });
   } else {
     res.status(404);
