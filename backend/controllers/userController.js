@@ -442,6 +442,11 @@ const verifyUser = asyncHandler( async(req, res) => {
   //res.send('user verifying');
 });
 
+// Change Role
+const changeRole = asyncHandler( async(req, res) => {
+  res.send("Change Role");
+});
+
 module.exports = { 
   registerUser,
   loginUser,
@@ -453,5 +458,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   sendVerificationEmail,
-  verifyUser
+  verifyUser,
+  changeRole
 };

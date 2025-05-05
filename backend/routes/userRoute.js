@@ -10,7 +10,8 @@ const {
   forgotPassword,
   resetPassword,
   sendVerificationEmail,
-  verifyUser
+  verifyUser,
+  changeRole
 } = require("../controllers/userController");
 const protect = require("../middleware/authMiddleware");
 const router = express.Router();
@@ -22,6 +23,7 @@ router.get("/logout", logoutUser);
 router.get("/loggedin", loginStatus);
 router.get("/getuser", protect, getUser);
 router.patch("/updateuser", protect, updateUser);
+//router.post("/changerole", protect, changeRole);
 
 router.patch("/changepassword", protect, changePassword);
 router.post("/forgotpassword", forgotPassword);
