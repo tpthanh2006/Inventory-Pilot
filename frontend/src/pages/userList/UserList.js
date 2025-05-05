@@ -4,6 +4,7 @@ import { FaTrashAlt } from 'react-icons/fa'
 import './UserList.scss'
 import UserStats from '../userStats/UserStats'
 import Search from '../../components/search/Search'
+import ChangeRole from '../../components/changeRole/ChangeRole'
 
 const UserList = () => {
   // Handle Search State
@@ -48,7 +49,7 @@ const UserList = () => {
                 <td>tranpthanh2006@gmail.com</td>
                 <td>Admin</td>
                 <td>
-                  Change Role
+                  <ChangeRole />
                 </td>
                 <td>
                   <span>

@@ -31,6 +31,11 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "+1"
   },
+  role: {
+    type: String,
+    required: [true],
+    default: "subscriber"
+  },
   bio: {
     type: String,
     maxLength: [250, "Bio must not be more than 250 characters"],
