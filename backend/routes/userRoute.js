@@ -4,6 +4,7 @@ const {
   loginUser,
   logoutUser,
   getUser,
+  getUsers,
   loginStatus,
   updateUser,
   changePassword,
@@ -11,9 +12,10 @@ const {
   resetPassword,
   sendVerificationEmail,
   verifyUser,
-  changeRole
+  deleteUser,
+  changeRole,
 } = require("../controllers/userController");
-const protect = require("../middleware/authMiddleware");
+const { protect, adminOnly, staffOnly, verifiedOnly } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.post("/register", registerUser);
@@ -22,8 +24,9 @@ router.get("/logout", logoutUser);
 
 router.get("/loggedin", loginStatus);
 router.get("/getuser", protect, getUser);
+router.get("/getusers", protect, staffOnly, getUsers);
 router.patch("/updateuser", protect, updateUser);
-//router.post("/changerole", protect, changeRole);
+router.post("/changerole", protect, changeRole);
 
 router.patch("/changepassword", protect, changePassword);
 router.post("/forgotpassword", forgotPassword);
@@ -31,5 +34,6 @@ router.put("/resetpassword/:resetToken", resetPassword);
 
 router.post("/sendverificationemail", protect, sendVerificationEmail);
 router.patch("/verifyuser/:verificationToken", protect, verifyUser);
+router.delete("/:id", protect, adminOnly, deleteUser);
 
 module.exports = router;

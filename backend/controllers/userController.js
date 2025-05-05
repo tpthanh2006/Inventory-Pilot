@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const User = require("../models/userModel");
 const Token = require("../models/tokenModel");
 const sendEmail = require("../utils/sendEmail");
+const { default: mongoose } = require("mongoose");
 
 // Generate Token
 const generateToken = (id) => {
@@ -110,7 +111,7 @@ const loginUser = asyncHandler( async(req, res) => {
 
   // Log user in
   if (user && passwordIsCorrect) {
-    const { _id, name, email, photo, phone, bio } = user;
+    const { _id, name, email, photo, phone, bio, role, isVerified } = user;
     res.status(200).json({
       _id,
       name,
@@ -118,6 +119,8 @@ const loginUser = asyncHandler( async(req, res) => {
       photo,
       phone,
       bio,
+      role,
+      isVerified,
       token
     });
   } else {
@@ -161,6 +164,11 @@ const getUser = asyncHandler( async(req, res) => {
     res.status(400);
     throw new Error("User not found");    
   }
+});
+
+// Get Users
+const getUsers = asyncHandler( async(req, res) => {
+  res.send('get all users');
 });
 
 // Get Login Status
@@ -442,6 +450,20 @@ const verifyUser = asyncHandler( async(req, res) => {
   //res.send('user verifying');
 });
 
+// Delete User
+const deleteUser = asyncHandler( async(req, res) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found, please sign up.")
+  }
+
+  res.status(200).json({
+    message: "User deleted successfully"
+  });
+});
+
 // Change Role
 const changeRole = asyncHandler( async(req, res) => {
   res.send("Change Role");
@@ -452,6 +474,7 @@ module.exports = {
   loginUser,
   logoutUser,
   getUser,
+  getUsers,
   loginStatus,
   updateUser,
   changePassword,
@@ -459,5 +482,6 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   verifyUser,
+  deleteUser,
   changeRole
 };

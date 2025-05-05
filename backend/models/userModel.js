@@ -34,7 +34,7 @@ const userSchema = mongoose.Schema({
   role: {
     type: String,
     required: [true],
-    default: "subscriber"
+    default: "subscriber" // subscriber, admin, staff, suspended
   },
   bio: {
     type: String,

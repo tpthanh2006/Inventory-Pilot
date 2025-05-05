@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
+// Log In
 const protect = asyncHandler (async(req, res, next) => {
   try {
     const token = req.cookies.token;
@@ -27,4 +28,39 @@ const protect = asyncHandler (async(req, res, next) => {
   }
 });
 
-module.exports = protect;
+// Admin
+const adminOnly = asyncHandler (async (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized as an admin")
+  };
+});
+
+// Staff
+const staffOnly = asyncHandler (async (req, res, next) => {
+  if (req.user && (req.user.role === "staff" || req.user.role === "admin")) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized as a staff")
+  };
+});
+
+// Verified
+const verifiedOnly = asyncHandler (async (req, res, next) => {
+  if (req.user && req.user.isVerified) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not authorized as a verified user")
+  };
+});
+
+module.exports = {
+  protect,
+  adminOnly,
+  staffOnly,
+  verifiedOnly
+};
