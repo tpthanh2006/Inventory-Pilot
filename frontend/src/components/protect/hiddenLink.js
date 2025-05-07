@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectIsLoggedIn } from "../../redux/features/auth/authSlice";
+import { selectIsLoggedIn, selectUser } from "../../redux/features/auth/authSlice";
 
 export const ShowOnLogin = ({children}) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -19,4 +19,19 @@ export const ShowOnLogout = ({children}) => {
   }
 
   return null;
+};
+
+export const AdminStaffLink = ({ children }) => {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const user = useSelector(selectUser);
+
+  if (isLoggedIn && (user?.role === "admin" || user?.role === "staff")) {
+    return <>{children}</>;
+  }
+
+  return (
+    <div className="--flex-center">
+      <h3> This page is only available for admin or staff </h3>
+    </div>
+  );
 };

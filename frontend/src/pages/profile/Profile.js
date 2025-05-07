@@ -67,6 +67,10 @@ const Profile = () => {
               </p>
 
               <p>
+                <b>Role: </b> {profile?.role}
+              </p>
+
+              <p>
                 <b>Bio: </b> {profile?.bio}
               </p>
 
