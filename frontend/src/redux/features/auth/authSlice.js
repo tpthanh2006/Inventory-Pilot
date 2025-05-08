@@ -16,7 +16,9 @@ const initialState = {
   },
   userID: "",
   message: "",
-
+  
+  users: [],
+  
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -44,6 +46,36 @@ export const verifyUser = createAsyncThunk(
   async (verificationToken, thunkAPI) => {
     try {
       return await authService.verifyUser(verificationToken);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get All Users
+export const getUsers = createAsyncThunk(
+  "auth/getUsers",
+  async (_, thunkAPI) => {
+    try {
+      return await authService.getUsers();
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Delete User
+export const deleteUser = createAsyncThunk(
+  "auth/deleteUser",
+  async (id, thunkAPI) => {
+    try {
+      return await authService.deleteUser(id);
     } catch (error) {
       const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
       
@@ -119,6 +151,43 @@ const authSlice = createSlice({
           state.isLoading = false;
           state.isError = true;
 
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Get Users
+      .addCase(getUsers.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(getUsers.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+          state.users = action.payload;
+      })
+      .addCase(getUsers.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Delete User
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isError = false;
+
+          state.message = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          
           state.message = action.payload;
           toast.error(action.payload);
       })

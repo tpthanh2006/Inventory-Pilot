@@ -119,6 +119,21 @@ const getUser = async () => {
   }
 };
 
+// Get All Users
+const getUsers = async() => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/api/users/getusers`);
+    
+    return response.data;
+  } catch (error) {
+    const message = (
+      error.response && error.response.data && error.response.data.message
+    ) || error.message || error.toString();
+
+    toast.error(message);
+  };
+}
+
 // Update User Profile
 const updateUser = async (formData) => {
   try {
@@ -179,17 +194,34 @@ const verifyUser = async (verificationToken) => {
   }
 };
 
+// Delete User
+const deleteUser = async (id) => {
+  try {
+    const response = await axios.delete(`${BACKEND_URL}/api/users/deleteuser/${id}`);
+    
+    return response.data.message;
+  } catch (error) {
+    const message = (
+      error.response && error.response.data && error.response.data.message
+    ) || error.message || error.toString();
+
+    toast.error(message);
+  }
+};
+
 const authService = {
   sendVerificationEmail,
   changePassword, 
   updateUser,
   getUser,
+  getUsers,
   getLoginStatus,
   resetPassword,
   forgotPassword,
   loginUser,
   logoutUser,
   verifyUser,
+  deleteUser,
   registerUser,
   validateEmail
 };
