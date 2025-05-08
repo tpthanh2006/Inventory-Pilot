@@ -197,7 +197,7 @@ const verifyUser = async (verificationToken) => {
 // Delete User
 const deleteUser = async (id) => {
   try {
-    const response = await axios.delete(`${BACKEND_URL}/api/users/deleteuser/${id}`);
+    const response = await axios.delete(`${BACKEND_URL}/api/users/${id}`);
     
     return response.data.message;
   } catch (error) {

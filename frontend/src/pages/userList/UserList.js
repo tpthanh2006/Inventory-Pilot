@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
+import { confirmAlert } from "react-confirm-alert"
+import "react-confirm-alert/src/react-confirm-alert.css"
 
 import './UserList.scss'
 import UserStats from '../userStats/UserStats'
@@ -8,7 +10,7 @@ import Search from '../../components/search/Search'
 import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
 import { AdminStaffLink } from '../../components/protect/hiddenLink'
-import { getUsers } from '../../redux/features/auth/authSlice'
+import { deleteUser, getUsers } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 
 const UserList = () => {
@@ -18,6 +20,27 @@ const UserList = () => {
   // Handle Search State
   const [search, setSearch] = useState("");
   const { users, isLoading, isLoggedIn, isSuccess, message } = useSelector((state) => state.auth);
+
+  const removeUser = async (id) => {
+    await dispatch(deleteUser(id));
+    dispatch(getUsers());
+  };
+
+  const confirmDelete = (id) => {
+    confirmAlert({
+      title: "Delete This User",
+      message: "Are you sure to do delete this user?",
+      buttons: [
+        {
+          label: "Delete",
+          onClick: () => removeUser(id),
+        },
+        {
+          label: "Cancel",
+        },
+      ],
+    });
+  };
 
   useEffect(() => {
     dispatch(getUsers());
@@ -75,7 +98,11 @@ const UserList = () => {
                         </td>
                         <td>
                           <span>
-                            <FaTrashAlt color='red' size={20}/>
+                            <FaTrashAlt
+                              color='red'
+                              size={20}
+                              onClick={() => confirmDelete(_id)}
+                            />
                           </span>
                         </td>
                       </tr>
