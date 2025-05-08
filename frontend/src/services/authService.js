@@ -209,6 +209,21 @@ const deleteUser = async (id) => {
   }
 };
 
+// Upgrade User
+const upgradeUser = async (userData) => {
+  try {
+    const response = await axios.patch(`${BACKEND_URL}/api/changerole`, userData);
+    
+    return response.data.message;
+  } catch (error) {
+    const message = (
+      error.response && error.response.data && error.response.data.message
+    ) || error.message || error.toString();
+
+    toast.error(message);
+  }
+};
+
 const authService = {
   sendVerificationEmail,
   changePassword, 
@@ -222,6 +237,7 @@ const authService = {
   logoutUser,
   verifyUser,
   deleteUser,
+  upgradeUser,
   registerUser,
   validateEmail
 };
