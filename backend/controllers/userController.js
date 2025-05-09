@@ -422,6 +422,45 @@ const sendVerificationEmail = asyncHandler ( async(req, res) => {
   //res.send("Verifcation email");
 });
 
+// Send Automated Email
+const sendAutomatedEmail = asyncHandler(async (req, res) => {
+  const { subject, send_to, reply_to, templateId, url } = req.body;
+
+  if (!subject || !send_to || !reply_to || !templateId) {
+    return res.status(400).json({ message: "Missing email parameters" });
+  }
+
+  // Get user
+  const user = await User.findOne({ email: send_to });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const sent_from = process.env.EMAIL_USER;
+  const name = user.name;
+  const link = `${process.env.FRONTEND_URL}${url}`;
+
+  try {
+    await sendEmail(
+      send_to,
+      sent_from,
+      reply_to,
+      templateId,
+      {
+        name: name,
+        link: link,
+        subject: subject
+      }
+    );
+    
+    res.status(200).json({ message: "Email Sent" });
+  } catch (error) {
+    console.error("Email Error:", error);
+    res.status(500).json({ message: "Email not sent, please try again" });
+  }
+});
+
 // Verify User
 const verifyUser = asyncHandler( async(req, res) => {
   const { verificationToken } = req.params;
@@ -503,6 +542,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   sendVerificationEmail,
+  sendAutomatedEmail,
   verifyUser,
   deleteUser,
   changeRole

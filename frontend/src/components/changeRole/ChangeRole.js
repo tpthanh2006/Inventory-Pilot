@@ -3,7 +3,14 @@ import React, { useState } from 'react'
 import { FaCheck } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 
-import { getUsers, upgradeUser } from '../../redux/features/auth/authSlice'
+import {
+  getUsers,
+  upgradeUser 
+} from '../../redux/features/auth/authSlice'
+import {
+  EMAIL_RESET,
+  sendAutomatedEmail,
+} from "../../redux/features/email/emailSlice"
 
 const ChangeRole = ({_id, email}) => {
   const dispatch = useDispatch();
@@ -14,7 +21,7 @@ const ChangeRole = ({_id, email}) => {
     e.preventDefault();
 
     if (!userRole) {
-      toast.error("Please select a new role for your user");
+      toast.error("Please select a role");
     }
 
     const userData = {
