@@ -1,16 +1,48 @@
+import { toast } from 'react-toastify'
 import React, { useState } from 'react'
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa'
+import { useDispatch } from 'react-redux'
 
-const ChangeRole = () => {
+import { getUsers, upgradeUser } from '../../redux/features/auth/authSlice'
+
+const ChangeRole = ({_id, email}) => {
+  const dispatch = useDispatch();
   const [userRole, setUserRole] = useState("");
+
+  // Change User Role
+  const changeUserRole = async (e) => {
+    e.preventDefault();
+
+    if (!userRole) {
+      toast.error("Please select a new role for your user");
+    }
+
+    const userData = {
+      id: _id,
+      role: userRole,
+    };
+
+    const emailData = {
+      subject: "User Role Change - Inventory Pilot",
+      send_to: email,
+      reply_to: "williamtran26@outlook.com",
+      templateId: "d-dab8cf7a2ab744d68be8a7bb4f010e2a",
+      url: "/login",
+    };
+
+    await dispatch(upgradeUser(userData));
+    await dispatch(sendAutomatedEmail(emailData));
+    await dispatch(getUsers());
+    dispatch(EMAIL_RESET());
+  };
 
   return (
     <div className='sort'>
-      <form className='--flex-start'>
+      <form className='--flex-start' onSubmit={(e) => changeUserRole(e, _id, userRole)}>
         <select value={userRole} onChange={(e) => setUserRole(e.target.value)}>
           <option value="">-- Select --</option>
           <option value="subscriber">Subscriber</option>
-          <option value="Staff">Staff</option>
+          <option value="staff">Staff</option>
           <option value="admin">Admin</option>
           <option value="suspended">Suspended</option>
         </select>
@@ -20,7 +52,7 @@ const ChangeRole = () => {
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 export default ChangeRole
