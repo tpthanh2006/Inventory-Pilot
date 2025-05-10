@@ -9,11 +9,15 @@ const initialState = {
   user: null,
   userID: "",
   message: "",
-  users: [],
+
   isError: false,
   isSuccess: false,
   isLoading: false,
   isLoggedIn: false,
+
+  users: [],
+  verifiedUsers: 0,
+  suspendedUsers: 0,
 }
 // Get User
 export const getUser = createAsyncThunk(
@@ -113,6 +117,40 @@ const authSlice = createSlice({
       state.isSuccess = false;
       state.isLoading = false;
       state.message = "";
+    },
+    CALC_VERIFIED_USERS(state, action) {
+      const array = [];
+
+      state.users.map((user) => {
+        const { role } = user;
+        return array.push( role );
+      });
+
+      let count = 0;
+      array.forEach((item) => {
+        if (item === "suspended") {
+          count++;
+        };
+      });
+
+      state.suspendedUsers = count;
+    },
+    CALC_SUSPENDED_USERS(state, action) {
+      const array = [];
+
+      state.users.map((user) => {
+        const { isVerified } = user;
+        return array.push( isVerified );
+      });
+
+      let count = 0;
+      array.forEach((item) => {
+        if (item === true) {
+          count++;
+        };
+      });
+
+      state.verifiedUsers = count;
     },
     SET_LOGIN(state, action) {
       state.isLoggedIn = action.payload
@@ -250,7 +288,14 @@ const authSlice = createSlice({
   }
 });
 
-export const {SET_LOGIN, SET_NAME, SET_USER, RESET} = authSlice.actions
+export const {
+  SET_LOGIN,
+  SET_NAME,
+  SET_USER,
+  RESET,
+  CALC_VERIFIED_USERS,
+  CALC_SUSPENDED_USERS
+} = authSlice.actions
 
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
 export const selectName = (state) => state.auth.name;
