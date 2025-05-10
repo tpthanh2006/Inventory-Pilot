@@ -11,6 +11,7 @@ import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
 import { deleteUser, getUsers, selectUser } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
+import { FILTER_USERS, selectUsers } from '../../redux/features/auth/filterSlice'
 
 const UserList = () => {
   useRedirectLoggedOutUser("/login");
@@ -20,7 +21,7 @@ const UserList = () => {
   const [search, setSearch] = useState("");
   const thisUser = useSelector(selectUser);
   const { users, isLoading } = useSelector((state) => state.auth);
-  
+  const filteredUsers = useSelector(selectUsers);
 
   const removeUser = async (id) => {
     await dispatch(deleteUser(id));
@@ -46,6 +47,10 @@ const UserList = () => {
   useEffect(() => {
     dispatch(getUsers());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(FILTER_USERS({ users, search }));
+  }, [dispatch, users, search]);
 
   if (thisUser.role === "subscriber" || thisUser.role === "suspended") {
     return (
@@ -93,7 +98,7 @@ const UserList = () => {
                 </thead>
 
                 <tbody>
-                  {users?.map((user, index) => {
+                  {filteredUsers?.map((user, index) => {
                     const { _id, name, email, role } = user;
 
                     return (

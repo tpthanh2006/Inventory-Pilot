@@ -4,12 +4,12 @@ const initialState = {
   filteredProducts: []
 }
 
-const filterSlice = createSlice({
-  name: "filter",
+const filterProductSlice = createSlice({
+  name: "filterProduct",
   initialState,
   reducers: {
     FILTER_PRODUCTS(state, action) {
-      const {products, search} = action.payload;
+      const { products, search } = action.payload;
 
       const tempProducts = products.filter((product) => 
         product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -21,8 +21,8 @@ const filterSlice = createSlice({
   },
 });
 
-export const {FILTER_PRODUCTS} = filterSlice.actions
+export const {FILTER_PRODUCTS} = filterProductSlice.actions
 
-export const selectFilteredProducts = (state) => state.filter.filteredProducts
+export const selectFilteredProducts = (state) => state.filterProduct.filteredProducts
 
-export default filterSlice.reducer
+export default filterProductSlice.reducer
