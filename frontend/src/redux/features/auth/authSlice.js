@@ -12,6 +12,7 @@ const initialState = {
     phone: "",
     bio: "",
     photo: "",
+    role: "subscriber",
     isVerified: false,
   },
   userID: "",

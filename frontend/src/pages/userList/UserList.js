@@ -9,7 +9,7 @@ import UserStats from '../userStats/UserStats'
 import Search from '../../components/search/Search'
 import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
-import { deleteUser, getUsers } from '../../redux/features/auth/authSlice'
+import { deleteUser, getUsers, selectUser } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 
 const UserList = () => {
@@ -18,7 +18,9 @@ const UserList = () => {
 
   // Handle Search State
   const [search, setSearch] = useState("");
+  const thisUser = useSelector(selectUser);
   const { users, isLoading } = useSelector((state) => state.auth);
+  
 
   const removeUser = async (id) => {
     await dispatch(deleteUser(id));
@@ -45,6 +47,14 @@ const UserList = () => {
     dispatch(getUsers());
   }, [dispatch]);
 
+  if (thisUser.role === "subscriber" || thisUser.role === "suspended") {
+    return (
+      <div className='--flex-center'>
+        <h3>This page is only available for admins or staffs</h3>
+      </div>
+    );
+  };
+  
   return (
       <div>
         <UserStats />
@@ -67,8 +77,8 @@ const UserList = () => {
             </div>
 
             {/* Table */}
-            {!isLoading && users.length === 0 ? (
-              <p>No user found...</p>
+            {!isLoading && users?.length === 0 ? (
+              <>No User Found</>
             ) : (
               <table>
                 <thead>
@@ -83,7 +93,7 @@ const UserList = () => {
                 </thead>
 
                 <tbody>
-                  {users.map((user, index) => {
+                  {users?.map((user, index) => {
                     const { _id, name, email, role } = user;
 
                     return (

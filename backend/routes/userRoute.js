@@ -27,7 +27,7 @@ router.get("/loggedin", loginStatus);
 router.get("/getuser", protect, getUser);
 router.get("/getusers", protect, staffOnly, getUsers);
 router.patch("/updateuser", protect, updateUser);
-router.post("/changerole", protect, changeRole);
+router.post("/changerole", protect, adminOnly, changeRole);
 
 router.patch("/changepassword", protect, changePassword);
 router.post("/forgotpassword", forgotPassword);
