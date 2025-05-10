@@ -18,7 +18,8 @@ const initialState = {
   users: [],
   verifiedUsers: 0,
   suspendedUsers: 0,
-}
+};
+
 // Get User
 export const getUser = createAsyncThunk(
   "auth/getUser",
@@ -156,18 +157,12 @@ const authSlice = createSlice({
       state.isLoggedIn = action.payload
     },
     SET_NAME(state, action) {
-      localStorage.setItem("name", JSON.stringify(action.payload))
-      state.name = action.payload
+      localStorage.setItem("name", JSON.stringify(action.payload));
+      state.name = action.payload;
     },
     SET_USER(state, action) {
       const profile = action.payload
-      
-      state.user.name = profile.name
-      state.user.email = profile.email
-      state.user.phone = profile.phone
-      state.user.bio = profile.bio
-      state.user.photo = profile.photo
-      state.user.isVerified = profile.isVerified
+      state.user = profile;
     }
   },
   extraReducers: (builder) => {
@@ -295,7 +290,7 @@ export const {
   RESET,
   CALC_VERIFIED_USERS,
   CALC_SUSPENDED_USERS
-} = authSlice.actions
+} = authSlice.actions;
 
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
 export const selectName = (state) => state.auth.name;

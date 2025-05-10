@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom'
 
 import "./Profile.scss"
@@ -27,14 +27,14 @@ const Profile = () => {
       if (data) {
         setProfile(data);
         await dispatch(SET_USER(data));
-        await dispatch(SET_NAME(data.name));
+        await dispatch(SET_NAME(data?.name));
       }
       
       setIsLoading(false);
     };
 
     getUserData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className='profile --my2'>
@@ -49,7 +49,7 @@ const Profile = () => {
             <span className='profile-photo'>
               <img
                 src={profile?.photo}
-                alt="profile picture"
+                alt="Profile"
               />
             </span>
 
