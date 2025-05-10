@@ -432,7 +432,7 @@ const sendAutomatedEmail = asyncHandler(async (req, res) => {
 
   // Get user
   const user = await User.findOne({ email: send_to });
-  
+
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
@@ -440,7 +440,7 @@ const sendAutomatedEmail = asyncHandler(async (req, res) => {
   const sent_from = process.env.EMAIL_USER;
   const name = user.name;
   const link = `${process.env.FRONTEND_URL}${url}`;
-
+  
   try {
     await sendEmail(
       send_to,
@@ -454,11 +454,11 @@ const sendAutomatedEmail = asyncHandler(async (req, res) => {
       }
     );
     
-    res.status(200).json({ message: "Email Sent" });
+    res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("Email Error:", error);
     res.status(500).json({ message: "Email not sent, please try again" });
-  }
+  };
 });
 
 // Verify User
