@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FaCheck } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 

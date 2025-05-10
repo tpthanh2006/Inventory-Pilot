@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
+import ReactPaginate from "react-paginate"
 import { confirmAlert } from "react-confirm-alert"
 import "react-confirm-alert/src/react-confirm-alert.css"
 
@@ -9,9 +10,10 @@ import UserStats from '../userStats/UserStats'
 import Search from '../../components/search/Search'
 import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
-import { deleteUser, getUsers, selectUser } from '../../redux/features/auth/authSlice'
+import { deleteUser, getUser, getUsers } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 import { FILTER_USERS, selectUsers } from '../../redux/features/auth/filterSlice'
+import { AdminStaffLink } from '../../components/protect/hiddenLink'
 
 const UserList = () => {
   useRedirectLoggedOutUser("/login");
@@ -19,7 +21,6 @@ const UserList = () => {
 
   // Handle Search State
   const [search, setSearch] = useState("");
-  const thisUser = useSelector(selectUser);
   const { users, isLoading } = useSelector((state) => state.auth);
   const filteredUsers = useSelector(selectUsers);
 
@@ -44,23 +45,32 @@ const UserList = () => {
     });
   };
 
+  // Begin Pagination
+  const itemsPerPage = 5;
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = filteredUsers.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  // Invoke when user click to request another page.
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % filteredUsers.length;
+    setItemOffset(newOffset);
+  };
+  // End Pagination
+
   useEffect(() => {
+    dispatch(getUser());
     dispatch(getUsers());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(FILTER_USERS({ users, search }));
   }, [dispatch, users, search]);
-
-  if (thisUser.role === "subscriber" || thisUser.role === "suspended") {
-    return (
-      <div className='--flex-center'>
-        <h3>This page is only available for admins or staffs</h3>
-      </div>
-    );
-  };
   
   return (
+    <AdminStaffLink>
       <div>
         <UserStats />
 
@@ -98,7 +108,7 @@ const UserList = () => {
                 </thead>
 
                 <tbody>
-                  {filteredUsers?.map((user, index) => {
+                  {currentItems?.map((user, index) => {
                     const { _id, name, email, role } = user;
 
                     return (
@@ -128,10 +138,25 @@ const UserList = () => {
                 </tbody>
               </table>
             )}
-            
           </div>
+
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={3}
+            pageCount={pageCount}
+            previousLabel="Prev"
+            renderOnZeroPageCount={null}
+            containerClassName="pagination"
+            pageLinkClassName="page-num"
+            previousLinkClassName="page-num"
+            nextLinkClassName="page-num"
+            activeLinkClassName="activePage"
+        />
         </div>
       </div>
+    </AdminStaffLink>
   )
 }
 
