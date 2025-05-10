@@ -9,7 +9,6 @@ import UserStats from '../userStats/UserStats'
 import Search from '../../components/search/Search'
 import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
-import { AdminStaffLink } from '../../components/protect/hiddenLink'
 import { deleteUser, getUsers } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 
@@ -19,7 +18,7 @@ const UserList = () => {
 
   // Handle Search State
   const [search, setSearch] = useState("");
-  const { users, isLoading, isLoggedIn, isSuccess, message } = useSelector((state) => state.auth);
+  const { users, isLoading } = useSelector((state) => state.auth);
 
   const removeUser = async (id) => {
     await dispatch(deleteUser(id));

@@ -432,7 +432,7 @@ const sendAutomatedEmail = asyncHandler(async (req, res) => {
 
   // Get user
   const user = await User.findOne({ email: send_to });
-
+  
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }

@@ -8,8 +8,8 @@ import {
   upgradeUser 
 } from '../../redux/features/auth/authSlice'
 import {
+  automateEmail,
   EMAIL_RESET,
-  sendAutomatedEmail,
 } from "../../redux/features/email/emailSlice"
 
 const ChangeRole = ({_id, email}) => {
@@ -30,7 +30,7 @@ const ChangeRole = ({_id, email}) => {
     };
 
     const emailData = {
-      subject: "User Role Change - Inventory Pilot",
+      subject: "User Role Changed - Inventory Pilot",
       send_to: email,
       reply_to: "williamtran26@outlook.com",
       templateId: "d-dab8cf7a2ab744d68be8a7bb4f010e2a",
@@ -38,7 +38,7 @@ const ChangeRole = ({_id, email}) => {
     };
 
     await dispatch(upgradeUser(userData));
-    await dispatch(sendAutomatedEmail(emailData));
+    await dispatch(automateEmail(emailData));
     await dispatch(getUsers());
     dispatch(EMAIL_RESET());
   };
