@@ -90,7 +90,7 @@ export const upgradeUser = createAsyncThunk(
   "auth/upgradeUser",
   async (userData, thunkAPI) => {
     try {
-      return await authService.upgradeUser(userData);
+      return await authService.upgradeRole(userData);
     } catch (error) {
       const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
       

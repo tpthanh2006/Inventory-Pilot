@@ -209,10 +209,10 @@ const deleteUser = async (id) => {
   }
 };
 
-// Upgrade User
-const upgradeUser = async (userData) => {
+// Upgrade Role
+const upgradeRole = async (userData) => {
   try {
-    const response = await axios.patch(`${BACKEND_URL}/api/changerole`, userData);
+    const response = await axios.post(`${BACKEND_URL}/api/users/changerole`, userData);
     
     return response.data.message;
   } catch (error) {
@@ -237,7 +237,7 @@ const authService = {
   logoutUser,
   verifyUser,
   deleteUser,
-  upgradeUser,
+  upgradeRole,
   registerUser,
   validateEmail
 };
