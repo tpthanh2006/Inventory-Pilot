@@ -2,10 +2,13 @@ const asyncHandler = require("express-async-handler"); // reduce try-catch block
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const parser = require("ua-parser-js");
 const User = require("../models/userModel");
 const Token = require("../models/tokenModel");
 const sendEmail = require("../utils/sendEmail");
-const { default: mongoose } = require("mongoose");
+const Cryptr = require("cryptr");
+
+const cryptr = new Cryptr(process.env.CRYPTR_KEY);
 
 // Generate Token
 const generateToken = (id) => {
@@ -39,11 +42,16 @@ const registerUser = asyncHandler( async (req, res) => {
     throw new Error("Email has already been registered");
   }
 
+  // Get user agent
+  const ua = parser(req.headers['user-agent']);
+  const userAgent = ua.ua;
+
   // Create new user
   const user = await User.create({
     name,
     email,
-    password
+    password,
+    userAgent
   });
 
   if (user) {
@@ -59,7 +67,7 @@ const registerUser = asyncHandler( async (req, res) => {
       secure: true
     });
 
-    const { _id, name, email, photo, phone, bio, role, isVerified } = user;
+    const { _id, name, email, photo, phone, bio, role, isVerified, userAgent } = user;
     res.status(201).json({
       _id,
       name,
@@ -69,7 +77,8 @@ const registerUser = asyncHandler( async (req, res) => {
       bio,
       token, 
       role, 
-      isVerified
+      isVerified,
+      userAgent
     });
   } else {
     res.status(400);
@@ -97,6 +106,37 @@ const loginUser = asyncHandler( async(req, res) => {
   // Check if password is correct
   const passwordIsCorrect = await bcrypt.compare(password, user.password);
   
+  const ua = parser(req.headers["user-agent"]);
+  const thisUserAgent = ua.ua;
+  const allowedAgent = user.userAgent.includes(thisUserAgent);
+  console.log(thisUserAgent, allowedAgent);
+
+  // Can't find allowed agents
+  if (!allowedAgent) {
+    // Generate a 6-digit login code
+    const loginCode = Math.floor(100000 + Math.random() * 900000);
+
+    // Encrypt the login code before saving to DB
+    const encryptedLoginCode = cryptr.encrypt(loginCode.toString());
+
+    // Delete token if it exists in DB
+    let userToken = await Token.findOne({ userId: user._id });
+    if (userToken) {
+      await userToken.deleteOne();
+    };
+
+    // Save token to DB
+    await new Token({
+      userId: user._id,
+      token: encryptedLoginCode,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 60 * (60 * 1000) // 60 mins
+    }).save();
+
+    res.status(400);
+    throw new Error("New browser or device detected.");
+  };
+
   // Generate Token
   const token = generateToken(user._id);
 
@@ -321,6 +361,7 @@ const forgotPassword = asyncHandler ( async(req, res) => {
 
   //res.send("Forgot Password");
 });
+
 
 // Reset Password
 const resetPassword = asyncHandler ( async(req, res) => {

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
 import { GrInsecure } from 'react-icons/gr'
-import { AiOutlineMail } from 'react-icons/ai'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
@@ -19,7 +17,7 @@ const LoginWithCode = () => {
             <GrInsecure size={35} color="#999" />
           </div>
           <h2>Enter Access Code</h2>
-          <form onSubmit={authService.loginUser()}>
+          <form onSubmit={authService.loginUser}>
             <input
               type="text"
               placeholder="Access Code"
@@ -42,7 +40,7 @@ const LoginWithCode = () => {
               </p>
 
               <p className='v-link --color-primary'>
-                <b>Resend Code</b>
+                Resend Code
               </p>
             </div>
           </form>

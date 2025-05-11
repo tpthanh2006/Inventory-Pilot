@@ -44,7 +44,12 @@ const userSchema = mongoose.Schema({
   isVerified: {
     type: Boolean,
     default: false
-  }
+  },
+  userAgent: {
+    type: Array,
+    required: [true],
+    default: []
+  },
 }, {
   timestamps: true,
   minimize: false
