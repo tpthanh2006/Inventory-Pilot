@@ -109,13 +109,13 @@ const loginUser = asyncHandler( async(req, res) => {
   const ua = parser(req.headers["user-agent"]);
   const thisUserAgent = ua.ua;
   const allowedAgent = user.userAgent.includes(thisUserAgent);
-  console.log(thisUserAgent, allowedAgent);
+  //console.log(thisUserAgent, allowedAgent);
 
   // Can't find allowed agents
   if (!allowedAgent) {
     // Generate a 6-digit login code
     const loginCode = Math.floor(100000 + Math.random() * 900000);
-    console.log(loginCode);
+    //console.log(loginCode);
 
     // Encrypt the login code before saving to DB
     const encryptedLoginCode = cryptr.encrypt(loginCode.toString());
@@ -135,7 +135,7 @@ const loginUser = asyncHandler( async(req, res) => {
     }).save();
 
     res.status(400);
-    throw new Error("Check your email for login code");
+    throw new Error("New device or browser detected.");
   };
 
   // Generate Token
@@ -168,6 +168,59 @@ const loginUser = asyncHandler( async(req, res) => {
     res.status(400);
     throw new Error("Invalid email or password");
   }
+});
+
+// Login With Code
+const loginWithCode = asyncHandler ( async(req, res) => {
+  const { email } = req.params;
+  const { loginCode } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  };
+
+  const userToken = await Token.findOne({
+    userId: user._id,
+    expiresAt: {$gt: Date.now()},
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error("Invalid or expired token. Please log in again");
+  };
+
+  const decryptedLoginCode = cryptr.decrypt(userToken.token);
+  if (loginCode !== decryptedLoginCode) {
+    res.status(400);
+    throw new Error("Incorrect login code. Please try again");
+  } else {
+    // Register new user agent
+    const ua = parser(req.headers["user-agent"]);
+    const thisUserAgent = ua.ua;
+    user.userAgent.push(thisUserAgent);
+    await user.save();
+
+    // Remove old token
+    await userToken.deleteOne();
+
+    // Send HTTP-only cookie
+    const token = generateToken(user._id);
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 86400 * 1000), // 1 DAY
+      sameSite: "none",
+      secure: true,
+    });
+
+    // Log user in
+    const { _id, name, email, phone, bio, photo, role, isVerified } = user;
+    res.status(201).json({
+        _id, name, email, phone, bio, photo, role, isVerified, token
+    });
+  };
 });
 
 // Send Login Code
@@ -639,6 +692,7 @@ module.exports = {
   sendVerificationEmail,
   sendAutomatedEmail,
   sendLoginCode,
+  loginWithCode,
   verifyUser,
   deleteUser,
   changeRole

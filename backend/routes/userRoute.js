@@ -10,6 +10,7 @@ const {
   changePassword,
   forgotPassword,
   resetPassword,
+  loginWithCode,
   sendLoginCode,
   sendAutomatedEmail,
   sendVerificationEmail,
@@ -35,6 +36,8 @@ router.post("/forgotpassword", forgotPassword);
 router.put("/resetpassword/:resetToken", resetPassword);
 
 router.post("/sendLoginCode/:email", sendLoginCode);
+router.post("/loginWithCode/:email", loginWithCode);
+
 router.post("/sendAutomatedEmail", protect, sendAutomatedEmail);
 router.post("/sendverificationemail", protect, sendVerificationEmail);
 router.patch("/verifyuser/:verificationToken", protect, verifyUser);
