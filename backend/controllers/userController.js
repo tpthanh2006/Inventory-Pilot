@@ -116,7 +116,7 @@ const loginUser = asyncHandler( async(req, res) => {
     // Generate a 6-digit login code
     const loginCode = Math.floor(100000 + Math.random() * 900000);
     console.log(loginCode);
-    
+
     // Encrypt the login code before saving to DB
     const encryptedLoginCode = cryptr.encrypt(loginCode.toString());
 
@@ -168,6 +168,59 @@ const loginUser = asyncHandler( async(req, res) => {
     res.status(400);
     throw new Error("Invalid email or password");
   }
+});
+
+// Send Login Code
+const sendLoginCode = asyncHandler( async(req, res) => {
+  const { email } = req.params;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404);
+    throw new Error("User not found");
+  };
+
+  // Find login code in DB
+  let userToken = await Token.findOne({
+    userId: user._id,
+    expiresAt: {$gt: Date.now()}
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error("Invalid or expired token. Please log in again");
+  };
+
+  const loginCode = userToken.token;
+  const decryptedLoginCode = cryptr.decrypt(loginCode);
+
+  // Send Login Code
+  const subject = "Login Access Code - Inventory Pilot";
+  const send_to = email;
+  const sent_from = process.env.EMAIL_USER;
+  const reply_to = process.env.EMAIL_USER;
+  const name = user.name;
+  const link = decryptedLoginCode;
+  const templateId = "d-0f9161496c734d238f3fc608aa17db60";
+
+  try {
+    await sendEmail(
+      send_to,
+      sent_from,
+      reply_to,
+      templateId,
+      {
+        name: name,
+        link: link,
+        subject: subject
+      }
+    );
+    
+    res.status(200).json({ message: `Access code sent to ${email}` });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Email not sent, please try again");
+  };
 });
 
 // Log Out User
@@ -585,6 +638,7 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   sendAutomatedEmail,
+  sendLoginCode,
   verifyUser,
   deleteUser,
   changeRole
