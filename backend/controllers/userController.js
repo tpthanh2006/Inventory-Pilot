@@ -115,7 +115,8 @@ const loginUser = asyncHandler( async(req, res) => {
   if (!allowedAgent) {
     // Generate a 6-digit login code
     const loginCode = Math.floor(100000 + Math.random() * 900000);
-
+    console.log(loginCode);
+    
     // Encrypt the login code before saving to DB
     const encryptedLoginCode = cryptr.encrypt(loginCode.toString());
 
@@ -134,7 +135,7 @@ const loginUser = asyncHandler( async(req, res) => {
     }).save();
 
     res.status(400);
-    throw new Error("New browser or device detected.");
+    throw new Error("Check your email for login code");
   };
 
   // Generate Token
