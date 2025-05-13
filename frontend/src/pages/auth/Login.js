@@ -1,14 +1,14 @@
 import { toast } from 'react-toastify'
 import React, { useState } from 'react'
 import { BiLogIn } from 'react-icons/bi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import Loader from '../../components/loader/Loader'
 import authService from '../../services/authService'
-import { SET_LOGIN, SET_NAME } from '../../redux/features/auth/authSlice'
+import { loginUser, RESET, sendCode2FA } from '../../redux/features/auth/authSlice'
 import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
@@ -17,12 +17,15 @@ const initialState = {
 }
 
 const Login = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState(initialState);
   const { email, password } = formData;
+
+  const { isLoading, isLoggedIn, isSuccess, isError, twoFactor } = useSelector(
+    (state) => state.auth
+  );
 
   const handleInputChange = async (e) => {
     const {name, value} = e.target;
@@ -50,22 +53,26 @@ const Login = () => {
       password
     };
     
-    setIsLoading(true);
     try {
-      const data = await authService.loginUser(userData);
+      //const data = await authService.loginUser(userData);
 
-      await dispatch(SET_LOGIN(true));
-      await dispatch(SET_NAME(data.name));
-      navigate("/dashboard");
+      await dispatch(loginUser(userData));
+      if (isSuccess && isLoggedIn) {
+        navigate("/dashboard");
+      };
       
-      setIsLoading(false);
-      console.log(data);
+      //console.log(data);
     } catch (error) {
-      setIsLoading(false);
-      console.log(error.message)
-    }
+      console.log(error.message);
+      
+      if (isError && twoFactor) {
+        await dispatch(sendCode2FA(email));
+        navigate(`/loginWithCode/${email}`);
 
-    //console.log(formData);
+        await dispatch(RESET());
+      };
+
+    };
   };
 
   return (

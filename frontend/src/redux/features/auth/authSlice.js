@@ -148,6 +148,7 @@ const authSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.isLoading = false;
+      state.twoFactor = false;
       state.message = "";
     },
     CALC_VERIFIED_USERS(state, action) {
@@ -202,7 +203,7 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(loginUser.pending, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isLoggedIn = true;
@@ -330,6 +331,25 @@ const authSlice = createSlice({
           toast.success(action.payload);
       })
       .addCase(upgradeUser.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Send Login Code
+      .addCase(sendCode2FA.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(sendCode2FA.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+
+          state.message = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(sendCode2FA.rejected, (state, action) => {
           state.isLoading = false;
           state.isError = true;
 
