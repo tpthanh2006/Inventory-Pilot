@@ -14,11 +14,27 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   isLoggedIn: false,
+  twoFactor: false,
 
   users: [],
   verifiedUsers: 0,
   suspendedUsers: 0,
 };
+
+// Login User
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async(userData, thunkAPI) => {
+    try {
+      return await authService.loginUser(userData);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 // Get User
 export const getUser = createAsyncThunk(
@@ -109,6 +125,21 @@ export const upgradeUser = createAsyncThunk(
   }
 );
 
+// Send 2FA Code
+export const sendCode2FA = createAsyncThunk(
+  "auth/sendLoginCode",
+  async (email, thunkAPI) => {
+    try {
+      return await authService.sendLoginCode(email);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -167,6 +198,31 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Login User
+      .addCase(loginUser.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(loginUser.pending, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isLoggedIn = true;
+
+        state.user = action.payload;
+        toast.success("Login successful");
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.user = null;
+        
+        state.message = action.payload;
+        toast.error(action.payload);
+
+        if (action.payload.includes("New device or browser")) {
+          state.twoFactor = true;
+        };
+      })
+
       // Get User
       .addCase(getUser.pending, (state, action) => {
         state.isLoading = true;

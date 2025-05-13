@@ -224,6 +224,13 @@ const upgradeRole = async (userData) => {
   }
 };
 
+// Send Login Code
+const sendLoginCode = async (email) => {
+  const response = await axios.post(`${BACKEND_URL}/api/users/sendLoginCode/${email}`);
+
+  return response.data.message;
+};
+
 const authService = {
   sendVerificationEmail,
   changePassword, 
@@ -239,7 +246,8 @@ const authService = {
   deleteUser,
   upgradeRole,
   registerUser,
-  validateEmail
+  validateEmail,
+  sendLoginCode
 };
 
 export default authService;

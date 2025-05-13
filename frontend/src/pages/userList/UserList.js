@@ -10,7 +10,7 @@ import UserStats from '../userStats/UserStats'
 import Search from '../../components/search/Search'
 import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
-import { deleteUser, getUser, getUsers } from '../../redux/features/auth/authSlice'
+import { deleteUser, getUsers } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
 import { FILTER_USERS, selectUsers } from '../../redux/features/auth/filterSlice'
 import { AdminStaffLink } from '../../components/protect/hiddenLink'
@@ -61,7 +61,6 @@ const UserList = () => {
   // End Pagination
 
   useEffect(() => {
-    dispatch(getUser());
     dispatch(getUsers());
   }, [dispatch]);
 
