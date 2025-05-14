@@ -2,10 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import authService from '../../../services/authService';
 import { toast } from 'react-toastify';
 
-const name = JSON.parse(localStorage.getItem("name"));
-
 const initialState = {
-  name: name ? name : "",
   user: null,
   userID: "",
   message: "",
@@ -151,6 +148,9 @@ const authSlice = createSlice({
       state.twoFactor = false;
       state.message = "";
     },
+    SET_LOGIN(state, action) {
+      state.isLoggedIn = action.payload
+    },
     CALC_VERIFIED_USERS(state, action) {
       const array = [];
 
@@ -185,17 +185,7 @@ const authSlice = createSlice({
 
       state.verifiedUsers = count;
     },
-    SET_LOGIN(state, action) {
-      state.isLoggedIn = action.payload
-    },
-    SET_NAME(state, action) {
-      localStorage.setItem("name", JSON.stringify(action.payload));
-      state.name = action.payload;
-    },
-    SET_USER(state, action) {
-      const profile = action.payload
-      state.user = profile;
-    }
+
   },
   extraReducers: (builder) => {
     builder
@@ -219,7 +209,7 @@ const authSlice = createSlice({
         state.message = action.payload;
         toast.error(action.payload);
 
-        if (action.payload.includes("New device or browser")) {
+        if (action.payload.includes("New")) {
           state.twoFactor = true;
         };
       })

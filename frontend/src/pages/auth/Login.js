@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BiLogIn } from 'react-icons/bi'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
@@ -8,7 +8,7 @@ import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import Loader from '../../components/loader/Loader'
 import authService from '../../services/authService'
-import { loginUser, RESET, sendCode2FA } from '../../redux/features/auth/authSlice'
+import { loginUser, sendCode2FA, RESET } from '../../redux/features/auth/authSlice'
 import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
@@ -20,12 +20,9 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { isLoading, isLoggedIn, isSuccess, isError, twoFactor } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialState);
   const { email, password } = formData;
-
-  const { isLoading, isLoggedIn, isSuccess, isError, twoFactor } = useSelector(
-    (state) => state.auth
-  );
 
   const handleInputChange = async (e) => {
     const {name, value} = e.target;
@@ -52,28 +49,22 @@ const Login = () => {
       email,
       password
     };
-    
-    try {
-      //const data = await authService.loginUser(userData);
 
-      await dispatch(loginUser(userData));
-      if (isSuccess && isLoggedIn) {
-        navigate("/dashboard");
-      };
-      
-      //console.log(data);
-    } catch (error) {
-      console.log(error.message);
-      
-      if (isError && twoFactor) {
-        await dispatch(sendCode2FA(email));
-        navigate(`/loginWithCode/${email}`);
-
-        await dispatch(RESET());
-      };
-
-    };
+    await dispatch(loginUser(userData));
   };
+
+  useEffect(() => {
+    if (isSuccess && isLoggedIn) {
+      navigate("/dashboard");
+    }
+
+    if (isError && twoFactor) {
+      dispatch(sendCode2FA(email));
+      navigate(`/loginWithCode/${email}`);
+    }
+
+    dispatch(RESET());
+  }, [isLoggedIn, isSuccess, isError, twoFactor, email, dispatch, navigate]);
 
   return (
     <div className={`container ${styles.auth}`}>
