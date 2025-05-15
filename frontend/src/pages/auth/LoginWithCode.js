@@ -1,23 +1,55 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { GrInsecure } from 'react-icons/gr'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
-import authService from '../../services/authService'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { loginWithCode, RESET } from '../../redux/features/auth/authSlice'
+import Loader from '../../components/loader/Loader'
 
 const LoginWithCode = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { email } = useParams();
   const [loginCode, setLoginCode] = useState("");
+  
+  const { isLoading, isLoggedIn, isSuccess} = useSelector(
+    (state) => state.auth
+  )
+
+  const loginByCode = async (e) => {
+    e.preventDefault();
+    
+    if (loginCode.length !== 6) {
+      return toast.error("Please fill in a valid 6-digit login code");
+    };
+
+    const code = { loginCode };
+
+    await dispatch(loginWithCode({code, email}));
+  };
+
+  useEffect(() => {
+    if (isSuccess && isLoggedIn) {
+      navigate("/dashboard");
+    };
+
+    dispatch(RESET());
+  }, [isLoggedIn, isSuccess, dispatch, navigate]);
 
   return (
     <div className={`container ${styles.auth}`}>
+      {isLoading && <Loader/>}
       <Card>
         <div className={styles.form}>
           <div className="--flex-center">
             <GrInsecure size={35} color="#999" />
           </div>
           <h2>Enter Access Code</h2>
-          <form onSubmit={authService.loginUser}>
+          <form onSubmit={loginByCode}>
             <input
               type="text"
               placeholder="Access Code"

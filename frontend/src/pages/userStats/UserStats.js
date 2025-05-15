@@ -23,7 +23,7 @@ const UserStats = () => {
   );
 
   useEffect(() => {
-    console.log(users);
+    //console.log(users);
     dispatch(CALC_VERIFIED_USERS());
     dispatch(CALC_SUSPENDED_USERS());
   }, [dispatch, users]);

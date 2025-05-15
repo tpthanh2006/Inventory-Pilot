@@ -137,6 +137,21 @@ export const sendCode2FA = createAsyncThunk(
   }
 );
 
+// Login With Code
+export const loginWithCode = createAsyncThunk(
+  "auth/loginWithCode",
+  async ({code, email}, thunkAPI) => {
+    try {
+      return await authService.loginWithCode(code, email);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -198,7 +213,7 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.twoFactor = false;
 
-        state.user = action.payload;
+        state.user = action.payload.user;
         toast.success("Login successful");
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -275,7 +290,7 @@ const authSlice = createSlice({
 
       // Get Users
       .addCase(getUsers.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
           state.isLoading = false;
@@ -332,7 +347,7 @@ const authSlice = createSlice({
 
       // Send Login Code
       .addCase(sendCode2FA.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true;
       })
       .addCase(sendCode2FA.fulfilled, (state, action) => {
           state.isLoading = false;
@@ -344,6 +359,28 @@ const authSlice = createSlice({
       .addCase(sendCode2FA.rejected, (state, action) => {
           state.isLoading = false;
           state.isError = true;
+
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Login With Code
+      .addCase(loginWithCode.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithCode.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isLoggedIn = true;
+          state.twoFactor = false;
+
+          state.user = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(loginWithCode.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.user = null;
 
           state.message = action.payload;
           toast.error(action.payload);
@@ -361,7 +398,7 @@ export const {
 } = authSlice.actions;
 
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
-export const selectName = (state) => state.auth.user.name;
+export const selectName = (state) => state.auth.user?.name;
 export const selectUser = (state) => state.auth.user;
 
 export default authSlice.reducer
