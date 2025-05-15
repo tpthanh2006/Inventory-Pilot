@@ -1,14 +1,14 @@
 import { toast } from 'react-toastify'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BiLogIn } from 'react-icons/bi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import Loader from '../../components/loader/Loader'
 import authService from '../../services/authService'
-import { SET_LOGIN, SET_NAME } from '../../redux/features/auth/authSlice'
+import { loginUser, sendCode2FA, RESET } from '../../redux/features/auth/authSlice'
 import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
@@ -17,10 +17,10 @@ const initialState = {
 }
 
 const Login = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, isLoggedIn, isSuccess, isError, twoFactor } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState(initialState);
   const { email, password } = formData;
 
@@ -49,24 +49,22 @@ const Login = () => {
       email,
       password
     };
-    
-    setIsLoading(true);
-    try {
-      const data = await authService.loginUser(userData);
 
-      await dispatch(SET_LOGIN(true));
-      await dispatch(SET_NAME(data.name));
+    await dispatch(loginUser(userData));
+  };
+
+  useEffect(() => {
+    if (isSuccess && isLoggedIn) {
       navigate("/dashboard");
-      
-      setIsLoading(false);
-      console.log(data);
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error.message)
     }
 
-    //console.log(formData);
-  };
+    if (isError && twoFactor) {
+      dispatch(sendCode2FA(email));
+      navigate(`/loginWithCode/${email}`);
+    }
+
+    dispatch(RESET());
+  }, [isLoggedIn, isSuccess, isError, twoFactor, email, dispatch, navigate]);
 
   return (
     <div className={`container ${styles.auth}`}>

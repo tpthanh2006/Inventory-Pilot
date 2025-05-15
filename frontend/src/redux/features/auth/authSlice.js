@@ -2,10 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import authService from '../../../services/authService';
 import { toast } from 'react-toastify';
 
-const name = JSON.parse(localStorage.getItem("name"));
-
 const initialState = {
-  name: name ? name : "",
   user: null,
   userID: "",
   message: "",
@@ -140,6 +137,21 @@ export const sendCode2FA = createAsyncThunk(
   }
 );
 
+// Login With Code
+export const loginWithCode = createAsyncThunk(
+  "auth/loginWithCode",
+  async ({code, email}, thunkAPI) => {
+    try {
+      return await authService.loginWithCode(code, email);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -148,7 +160,11 @@ const authSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.isLoading = false;
+      state.twoFactor = false;
       state.message = "";
+    },
+    SET_LOGIN(state, action) {
+      state.isLoggedIn = action.payload;
     },
     CALC_VERIFIED_USERS(state, action) {
       const array = [];
@@ -184,17 +200,6 @@ const authSlice = createSlice({
 
       state.verifiedUsers = count;
     },
-    SET_LOGIN(state, action) {
-      state.isLoggedIn = action.payload
-    },
-    SET_NAME(state, action) {
-      localStorage.setItem("name", JSON.stringify(action.payload));
-      state.name = action.payload;
-    },
-    SET_USER(state, action) {
-      const profile = action.payload
-      state.user = profile;
-    }
   },
   extraReducers: (builder) => {
     builder
@@ -202,25 +207,28 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state, action) => {
         state.isLoading = true;
       })
-      .addCase(loginUser.pending, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.isLoggedIn = true;
+        state.twoFactor = false;
 
-        state.user = action.payload;
+        state.user = action.payload.user;
         toast.success("Login successful");
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.isSuccess = false;
+        state.isLoggedIn = false;
         state.user = null;
-        
-        state.message = action.payload;
-        toast.error(action.payload);
 
-        if (action.payload.includes("New device or browser")) {
+        if (action.payload.includes("New")) {
           state.twoFactor = true;
         };
+
+        state.message = action.payload;
+        toast.error(action.payload);
       })
 
       // Get User
@@ -282,7 +290,7 @@ const authSlice = createSlice({
 
       // Get Users
       .addCase(getUsers.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
           state.isLoading = false;
@@ -336,6 +344,47 @@ const authSlice = createSlice({
           state.message = action.payload;
           toast.error(action.payload);
       })
+
+      // Send Login Code
+      .addCase(sendCode2FA.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(sendCode2FA.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+
+          state.message = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(sendCode2FA.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Login With Code
+      .addCase(loginWithCode.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithCode.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isLoggedIn = true;
+          state.twoFactor = false;
+
+          state.user = action.payload;
+          toast.success(action.payload);
+      })
+      .addCase(loginWithCode.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.user = null;
+
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
   }
 });
 
@@ -349,7 +398,7 @@ export const {
 } = authSlice.actions;
 
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
-export const selectName = (state) => state.auth.name;
+export const selectName = (state) => state.auth.user?.name;
 export const selectUser = (state) => state.auth.user;
 
 export default authSlice.reducer

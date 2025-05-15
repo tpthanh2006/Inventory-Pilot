@@ -1,5 +1,6 @@
 import axios from "axios"
 import {toast} from "react-toastify"
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 
 const validateEmail = (email) => {
@@ -30,9 +31,8 @@ const registerUser = async (userData) => {
 const loginUser = async (userData) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/users/login`, userData);
-    if (response.statusText === "OK") {
-      toast.success("Login successful");
-    }
+
+    // Remove duplicate toast message
 
     return response.data;
   } catch (error) {
@@ -40,7 +40,7 @@ const loginUser = async (userData) => {
       error.response && error.response.data && error.response.data.message
     ) || error.message || error.toString();
 
-    toast.error(message);
+    throw new Error(message); // Let the slice handle the error
   }
 };
 
@@ -231,6 +231,13 @@ const sendLoginCode = async (email) => {
   return response.data.message;
 };
 
+// Login With Code
+const loginWithCode = async (code, email) => {
+  const response = await axios.post(`${BACKEND_URL}/api/users/loginWithCode/${email}`, code);
+
+  return response.data.message;
+};
+
 const authService = {
   sendVerificationEmail,
   changePassword, 
@@ -247,7 +254,8 @@ const authService = {
   upgradeRole,
   registerUser,
   validateEmail,
-  sendLoginCode
+  sendLoginCode,
+  loginWithCode
 };
 
 export default authService;
