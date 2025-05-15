@@ -6,7 +6,7 @@ import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { loginWithCode, RESET } from '../../redux/features/auth/authSlice'
+import { loginWithCode, RESET, sendCode2FA } from '../../redux/features/auth/authSlice'
 import Loader from '../../components/loader/Loader'
 
 const LoginWithCode = () => {
@@ -22,7 +22,7 @@ const LoginWithCode = () => {
 
   const loginByCode = async (e) => {
     e.preventDefault();
-    
+
     if (loginCode.length !== 6) {
       return toast.error("Please fill in a valid 6-digit login code");
     };
@@ -30,6 +30,11 @@ const LoginWithCode = () => {
     const code = { loginCode };
 
     await dispatch(loginWithCode({code, email}));
+  };
+  
+  const resendLoginCode = async () => {
+    await dispatch(sendCode2FA(email));
+    await dispatch(RESET());
   };
 
   useEffect(() => {
@@ -71,7 +76,7 @@ const LoginWithCode = () => {
                 <Link to='/'>- Home</Link>
               </p>
 
-              <p className='v-link --color-primary'>
+              <p onClick={resendLoginCode} className='v-link --color-primary'>
                 Resend Code
               </p>
             </div>
