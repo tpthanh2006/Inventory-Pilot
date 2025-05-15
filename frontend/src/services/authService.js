@@ -30,9 +30,6 @@ const registerUser = async (userData) => {
 const loginUser = async (userData) => {
   try {
     const response = await axios.post(`${BACKEND_URL}/api/users/login`, userData);
-    if (response.statusText === "OK") {
-      toast.success("Login successful");
-    }
 
     return response.data;
   } catch (error) {
@@ -40,7 +37,7 @@ const loginUser = async (userData) => {
       error.response && error.response.data && error.response.data.message
     ) || error.message || error.toString();
 
-    toast.error(message);
+    throw new Error(message); // Let the slice handle the error
   }
 };
 

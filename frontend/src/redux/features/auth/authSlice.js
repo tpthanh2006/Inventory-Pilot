@@ -149,7 +149,7 @@ const authSlice = createSlice({
       state.message = "";
     },
     SET_LOGIN(state, action) {
-      state.isLoggedIn = action.payload
+      state.isLoggedIn = action.payload;
     },
     CALC_VERIFIED_USERS(state, action) {
       const array = [];
@@ -185,7 +185,6 @@ const authSlice = createSlice({
 
       state.verifiedUsers = count;
     },
-
   },
   extraReducers: (builder) => {
     builder
@@ -197,6 +196,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isLoggedIn = true;
+        state.twoFactor = false;
 
         state.user = action.payload;
         toast.success("Login successful");
@@ -204,14 +204,16 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
+        state.isSuccess = false;
+        state.isLoggedIn = false;
         state.user = null;
-        
-        state.message = action.payload;
-        toast.error(action.payload);
 
         if (action.payload.includes("New")) {
           state.twoFactor = true;
         };
+
+        state.message = action.payload;
+        toast.error(action.payload);
       })
 
       // Get User
@@ -359,7 +361,7 @@ export const {
 } = authSlice.actions;
 
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
-export const selectName = (state) => state.auth.name;
+export const selectName = (state) => state.auth.user.name;
 export const selectUser = (state) => state.auth.user;
 
 export default authSlice.reducer

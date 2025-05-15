@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import authService from '../../services/authService';
-import { selectName, SET_LOGIN } from '../../redux/features/auth/authSlice';
+import { RESET, selectName, SET_LOGIN } from '../../redux/features/auth/authSlice';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -13,6 +13,7 @@ const Header = () => {
   const logout = async (e) => {
     await authService.logoutUser();
     await dispatch(SET_LOGIN(false));
+    await dispatch(RESET());
     navigate("/login");
   };
 
