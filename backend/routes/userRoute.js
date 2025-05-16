@@ -10,6 +10,7 @@ const {
   changePassword,
   forgotPassword,
   resetPassword,
+  loginWithGoogle,
   loginWithCode,
   sendLoginCode,
   sendAutomatedEmail,
@@ -18,7 +19,7 @@ const {
   deleteUser,
   changeRole,
 } = require("../controllers/userController");
-const { protect, adminOnly, staffOnly, verifiedOnly } = require("../middleware/authMiddleware");
+const { protect, adminOnly, staffOnly } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.post("/register", registerUser);
@@ -37,6 +38,7 @@ router.put("/resetpassword/:resetToken", resetPassword);
 
 router.post("/sendLoginCode/:email", sendLoginCode);
 router.post("/loginWithCode/:email", loginWithCode);
+router.post("/google/callback", loginWithGoogle);
 
 router.post("/sendAutomatedEmail", protect, sendAutomatedEmail);
 router.post("/sendverificationemail", protect, sendVerificationEmail);

@@ -238,6 +238,12 @@ const loginWithCode = async (code, email) => {
   return response.data.message;
 };
 
+const loginWithGoogle = async (userToken) => {
+  const response = await axios.post(`${BACKEND_URL}/api/users/google/callback`, userToken);
+
+  return response.data;
+};
+
 const authService = {
   sendVerificationEmail,
   changePassword, 
@@ -255,7 +261,8 @@ const authService = {
   registerUser,
   validateEmail,
   sendLoginCode,
-  loginWithCode
+  loginWithCode,
+  loginWithGoogle
 };
 
 export default authService;

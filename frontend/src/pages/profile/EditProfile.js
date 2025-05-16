@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import './Profile.scss'
 import { selectUser } from '../../redux/features/auth/authSlice';
@@ -15,7 +15,6 @@ const EditProfile = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [profileImage, setProfileImage] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
 
   const user = useSelector(selectUser);
   const { email } = user;
@@ -107,7 +106,7 @@ const EditProfile = () => {
             <span className='profile-photo'>
               <img
                 src={user?.photo}
-                alt="profile picture"
+                alt="Avatar"
               />
             </span>
 

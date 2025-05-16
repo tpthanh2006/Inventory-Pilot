@@ -37,7 +37,7 @@ const EditProduct = () => {
       productEdit.description :
       ""
     );
-  }, []);
+  }, [productEdit]);
 
   const handleInputChange = async (e) => {
     const {name, value} = e.target;

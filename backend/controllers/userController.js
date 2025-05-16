@@ -678,6 +678,14 @@ const changeRole = asyncHandler( async(req, res) => {
   });
 });
 
+// Login With Google
+const loginWithGoogle = asyncHandler ( async (req, res) => {
+  const { userToken }  = req.body;
+  //console.log(userToken);
+
+  res.send("google login");
+});
+
 module.exports = { 
   registerUser,
   loginUser,
@@ -693,6 +701,7 @@ module.exports = {
   sendAutomatedEmail,
   sendLoginCode,
   loginWithCode,
+  loginWithGoogle,
   verifyUser,
   deleteUser,
   changeRole

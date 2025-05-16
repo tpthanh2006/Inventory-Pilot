@@ -152,6 +152,21 @@ export const loginWithCode = createAsyncThunk(
   }
 );
 
+// Login With Google
+export const loginWithGoogle = createAsyncThunk(
+  "auth/loginWithGoogle",
+  async (userToken, thunkAPI) => {
+    try {
+      return await authService.loginWithGoogle(userToken);
+    } catch (error) {
+      const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+      
+      console.log(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -166,7 +181,7 @@ const authSlice = createSlice({
     SET_LOGIN(state, action) {
       state.isLoggedIn = action.payload;
     },
-    CALC_VERIFIED_USERS(state, action) {
+    CALC_VERIFIED_USERS(state) {
       const array = [];
 
       state.users.map((user) => {
@@ -183,7 +198,7 @@ const authSlice = createSlice({
 
       state.suspendedUsers = count;
     },
-    CALC_SUSPENDED_USERS(state, action) {
+    CALC_SUSPENDED_USERS(state) {
       const array = [];
 
       state.users.map((user) => {
@@ -204,7 +219,7 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Login User
-      .addCase(loginUser.pending, (state, action) => {
+      .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
@@ -232,7 +247,7 @@ const authSlice = createSlice({
       })
 
       // Get User
-      .addCase(getUser.pending, (state, action) => {
+      .addCase(getUser.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getUser.fulfilled, (state, action) => {
@@ -378,6 +393,28 @@ const authSlice = createSlice({
           toast.success(action.payload);
       })
       .addCase(loginWithCode.rejected, (state, action) => {
+          state.isLoading = false;
+          state.isError = true;
+          state.user = null;
+
+          state.message = action.payload;
+          toast.error(action.payload);
+      })
+
+      // Login With Google
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+          state.isLoading = false;
+          state.isSuccess = true;
+          state.isLoggedIn = true;
+          state.twoFactor = false;
+
+          state.user = action.payload;
+          toast.success("Login successful");
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
           state.isLoading = false;
           state.isError = true;
           state.user = null;

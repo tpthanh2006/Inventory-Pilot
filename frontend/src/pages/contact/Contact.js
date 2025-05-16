@@ -86,7 +86,7 @@ const Contact = () => {
               </span>
               <span>
                 <GoLocation />
-                <p>New Orleans, United State</p>
+                <p>New Orleans, United States</p>
               </span>
               <span>
                 <FaTwitter />

@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { BiLogIn } from 'react-icons/bi'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { GoogleLogin } from "@react-oauth/google"
 
 import styles from './auth.module.scss'
 import Card from '../../components/card/Card'
 import Loader from '../../components/loader/Loader'
 import authService from '../../services/authService'
-import { loginUser, sendCode2FA, RESET } from '../../redux/features/auth/authSlice'
+import { loginUser, sendCode2FA, RESET, loginWithGoogle } from '../../redux/features/auth/authSlice'
 import PasswordInput from '../../components/passwordInput/PasswordInput'
 
 const initialState = {
@@ -53,6 +54,14 @@ const Login = () => {
     await dispatch(loginUser(userData));
   };
 
+  const googleLogin = async (credentialResponse) => {
+    //console.log(credentialResponse);
+
+    await dispatch(
+      loginWithGoogle({ userToken: credentialResponse.credential })
+    );
+  };
+
   useEffect(() => {
     if (isSuccess && isLoggedIn) {
       navigate("/dashboard");
@@ -75,6 +84,19 @@ const Login = () => {
             <BiLogIn size={35} color="#999" />
           </div>
           <h2>Login</h2>
+          <div className='--flex-center'>
+            <GoogleLogin
+              onSuccess={googleLogin}
+              onError={() => {
+                //console.log("Login Failed");
+                toast.error("Login Failed");
+              }}
+            />
+          </div>
+
+          <br />
+          <p className="--text-center --fw-bold">or</p>
+
           <form onSubmit={login}>
             <input
               type="email"
