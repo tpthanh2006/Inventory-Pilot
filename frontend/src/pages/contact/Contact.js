@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {GoLocation} from 'react-icons/go'
-import {FaPhoneAlt, FaEnvelope, FaTwitter} from 'react-icons/fa'
+import {FaPhoneAlt, FaEnvelope} from 'react-icons/fa'
 
 import './Contact.scss'
 import Card from '../../components/card/Card'
@@ -87,10 +87,6 @@ const Contact = () => {
               <span>
                 <GoLocation />
                 <p>New Orleans, United States</p>
-              </span>
-              <span>
-                <FaTwitter />
-                <p>@WilliamTran</p>
               </span>
             </div>
           </Card>

@@ -2,13 +2,16 @@ const asyncHandler = require("express-async-handler"); // reduce try-catch block
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
+const Cryptr = require("cryptr");
 const parser = require("ua-parser-js");
+const { OAuth2Client } = require("google-auth-library");
+
 const User = require("../models/userModel");
 const Token = require("../models/tokenModel");
 const sendEmail = require("../utils/sendEmail");
-const Cryptr = require("cryptr");
 
 const cryptr = new Cryptr(process.env.CRYPTR_KEY);
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate Token
 const generateToken = (id) => {
@@ -681,9 +684,94 @@ const changeRole = asyncHandler( async(req, res) => {
 // Login With Google
 const loginWithGoogle = asyncHandler ( async (req, res) => {
   const { userToken }  = req.body;
-  //console.log(userToken);
+  
+  const ticket = await client.verifyIdToken({
+    idToken: userToken,
+    audience: process.env.GOOGLE_CLIENT_ID
+  });
 
-  res.send("google login");
+  const payload = ticket.getPayload();
+  const { name, email, picture, sub } = payload;
+  const password = Date.now() + sub;
+  
+  // Get user agent
+  const ua = parser(req.headers['user-agent']);
+  const userAgent = ua.ua;
+  
+  // Find user in DB
+  const user = await User.findOne({ email });
+
+  // Register new user
+  if (!user) {  
+    const newUser = await User.create({
+      name,
+      email,
+      password,
+      userAgent,
+      photo: picture,
+      isVerified: true
+    });
+
+    if (newUser) {
+      // Generate Token
+      const token = generateToken(newUser._id);
+
+      // Send HTTP-only cookie
+      res.cookie("token", token, {
+        path: "/",
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 86400), // 1 day
+        sameSite: "none",
+        secure: true
+      });
+      
+      const { _id, name, email, photo, phone, bio, role, isVerified, userAgent } = newUser;
+      res.status(201).json({
+        _id,
+        name,
+        email,
+        photo,
+        phone,
+        bio,
+        token, 
+        role, 
+        isVerified,
+        userAgent
+      });  
+    } else {
+      res.status(400);
+      throw new Error("Invalid user data");
+    }
+  };
+  
+  // Sign old user in
+  if (user) {
+    // Generate Token
+    const token = generateToken(user._id);
+
+    // Send HTTP-only cookie
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 86400), // 1 day
+      sameSite: "none",
+      secure: true,
+    });
+
+    const { _id, name, email, phone, bio, photo, role, isVerified } = user;
+
+    res.status(201).json({
+      _id,
+      name,
+      email,
+      phone,
+      bio,
+      photo,
+      role,
+      isVerified,
+      token,
+    });
+  };
 });
 
 module.exports = { 

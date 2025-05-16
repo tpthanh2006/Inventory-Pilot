@@ -50,12 +50,12 @@ const UserList = () => {
   const [itemOffset, setItemOffset] = useState(0);
 
   const endOffset = itemOffset + itemsPerPage;
-  const currentItems = filteredUsers.slice(itemOffset, endOffset);
+  const currentItems = filteredUsers?.slice(itemOffset, endOffset);
   const pageCount = Math.ceil(filteredUsers.length / itemsPerPage);
 
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredUsers.length;
+    const newOffset = (event.selected * itemsPerPage) % filteredUsers?.length;
     setItemOffset(newOffset);
   };
   // End Pagination
