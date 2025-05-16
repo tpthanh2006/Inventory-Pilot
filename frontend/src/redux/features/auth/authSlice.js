@@ -178,6 +178,12 @@ const authSlice = createSlice({
       state.twoFactor = false;
       state.message = "";
     },
+    SET_USER(state, action) {
+      state.user = action.payload;
+    },
+    SET_NAME(state, action) {
+      state.user.name = action.payload.name;
+    },
     SET_LOGIN(state, action) {
       state.isLoggedIn = action.payload;
     },

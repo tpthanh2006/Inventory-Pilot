@@ -14,7 +14,7 @@ const filterUserSlice = createSlice({
       const tempUsers = users?.filter((user) => 
         user.name.toLowerCase().includes(search.toLowerCase()) ||
         user.email.toLowerCase().includes(search.toLowerCase())
-      );
+      ) || [];
 
       state.filteredUsers = tempUsers;
     }
@@ -22,6 +22,6 @@ const filterUserSlice = createSlice({
 });
 
 export const { FILTER_USERS } = filterUserSlice.actions
-export const selectUsers = (state) => state.filterUser.filteredUsers
+export const selectFilteredUsers = (state) => state.filterUser.filteredUsers
 
 export default filterUserSlice.reducer

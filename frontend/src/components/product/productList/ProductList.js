@@ -59,10 +59,12 @@ const ProductList = ({products, isLoading}) => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    const endOffset = itemOffset + itemsPerPage;
+    if (filteredProducts) {
+      const endOffset = itemOffset + itemsPerPage;
 
-    setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
+      setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
+      setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
+    };
   }, [itemOffset, itemsPerPage, filteredProducts]);
 
   const handlePageClick = (event) => {

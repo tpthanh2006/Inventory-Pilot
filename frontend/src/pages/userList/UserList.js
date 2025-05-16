@@ -12,7 +12,7 @@ import ChangeRole from '../../components/changeRole/ChangeRole'
 import useRedirectLoggedOutUser from "../../customHook/useRedirectLoggedOutUser"
 import { deleteUser, getUsers } from '../../redux/features/auth/authSlice'
 import { SpinnerImg } from '../../components/loader/Loader'
-import { FILTER_USERS, selectUsers } from '../../redux/features/auth/filterSlice'
+import { selectFilteredUsers, FILTER_USERS } from '../../redux/features/auth/filterSlice'
 import { AdminStaffLink } from '../../components/protect/hiddenLink'
 
 const UserList = () => {
@@ -22,7 +22,7 @@ const UserList = () => {
   // Handle Search State
   const [search, setSearch] = useState("");
   const { users, isLoading } = useSelector((state) => state.auth);
-  const filteredUsers = useSelector(selectUsers);
+  const filteredUsers = useSelector(selectFilteredUsers);
 
   const removeUser = async (id) => {
     await dispatch(deleteUser(id));
@@ -51,24 +51,27 @@ const UserList = () => {
     setItemOffset(newOffset);
   };
 
-  // Begin Pagination
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    //dispatch(getUsers());
-    const endOffset = itemOffset + itemsPerPage;
-
-    setCurrentItems(filteredUsers.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(filteredUsers.length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, filteredUsers]);
-  // End Pagination
+    dispatch(getUsers());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(FILTER_USERS({ users, search }));
   }, [dispatch, users, search]);
+
+  useEffect(() => {
+    if (filteredUsers) {
+      const endOffset = itemOffset + itemsPerPage;
+
+      setCurrentItems(filteredUsers.slice(itemOffset, endOffset));
+      setPageCount(Math.ceil(filteredUsers.length / itemsPerPage));
+    };
+  }, [dispatch, itemOffset, itemsPerPage, filteredUsers]);
   
   return (
     <AdminStaffLink>
