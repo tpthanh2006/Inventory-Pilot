@@ -45,24 +45,26 @@ const UserList = () => {
     });
   };
 
-  // Begin Pagination
-  const itemsPerPage = 5;
-  const [itemOffset, setItemOffset] = useState(0);
-
-  const endOffset = itemOffset + itemsPerPage;
-  const currentItems = filteredUsers?.slice(itemOffset, endOffset);
-  const pageCount = Math.ceil(filteredUsers.length / itemsPerPage);
-
   // Invoke when user click to request another page.
   const handlePageClick = (event) => {
     const newOffset = (event.selected * itemsPerPage) % filteredUsers?.length;
     setItemOffset(newOffset);
   };
-  // End Pagination
+
+  // Begin Pagination
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 5;
 
   useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+    //dispatch(getUsers());
+    const endOffset = itemOffset + itemsPerPage;
+
+    setCurrentItems(filteredUsers.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(filteredUsers.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, filteredUsers]);
+  // End Pagination
 
   useEffect(() => {
     dispatch(FILTER_USERS({ users, search }));
