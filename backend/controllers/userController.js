@@ -746,6 +746,12 @@ const loginWithGoogle = asyncHandler ( async (req, res) => {
   
   // Sign old user in
   if (user) {
+    // Delete token if it exists in DB
+    let oldToken = await Token.findOne({ userId: user._id });
+    if (oldToken) {
+      await oldToken.deleteOne();
+    };
+
     // Generate Token
     const token = generateToken(user._id);
 
