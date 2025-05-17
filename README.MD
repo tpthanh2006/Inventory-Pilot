@@ -1,4 +1,4 @@
-# [🏦Inventory Pilot](https://inventory-pilot-one.vercel.app/)
+# [🏦 Inventory Pilot](https://inventory-pilot-one.vercel.app/)
 
 This full-stack application demonstrates inventory management capabilities with advanced user authentication, secure authorization, and professional-grade product management features.
 
@@ -8,27 +8,29 @@ This full-stack application demonstrates inventory management capabilities with 
 ✨ Key Features
 - Complete Authentication Flow
   - Email & Password Registration/Login
+  - Google OAuth Integration
   - Password Reset via Email
   - JWT-based Authentication
-- Profile Management
-  - Update Profile Information
-  - Change Password
+- User Management
+  - Role-based Authorization
   - Profile Image Upload
+  - Password Change
+  - Profile Updates
 - Product Management
   - Complete CRUD Operations
+  - Product Search & Filtering
   - Image Upload with Cloudinary
+  - Dashboard Analytics
   - Product Categories
   - Stock Management
-  - Product Search & Filtering
-  - Dashboard Analytics
 - Security Features
   - Protected Routes
-  - Secure Cookie Handling
   - JWT Token Management
+  - Secure Cookie Handling
   - Auth Middleware Implementation
 
 🌟 Advanced Features
-  - Real-time Session Management
-  - Automated Email Workflows
-  - Role-based Access Control
-  - Secure Password Reset Flow
+- Real-time Session Management
+- Secure Password Reset Flow
+- Automated Email Workflows
+- Role-based Access Control
