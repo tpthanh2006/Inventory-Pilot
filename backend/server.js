@@ -22,7 +22,7 @@ app.use(cors({
   origin: [
     "http://localhost:3000", 
     "https://inventory-pilot-one.vercel.app",
-    "https://william-tran.vercel.app/"
+    "https://william-tran.vercel.app"
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
