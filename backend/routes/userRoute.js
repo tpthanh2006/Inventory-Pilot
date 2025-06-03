@@ -13,6 +13,7 @@ const {
   loginWithGoogle,
   loginWithCode,
   sendLoginCode,
+  sendCustomEmail,
   sendAutomatedEmail,
   sendVerificationEmail,
   verifyUser,
@@ -40,6 +41,7 @@ router.post("/sendLoginCode/:email", sendLoginCode);
 router.post("/loginWithCode/:email", loginWithCode);
 router.post("/google/callback", loginWithGoogle);
 
+router.post("/sendCustomEmail", sendCustomEmail);
 router.post("/sendAutomatedEmail", protect, sendAutomatedEmail);
 router.post("/sendverificationemail", protect, sendVerificationEmail);
 router.patch("/verifyuser/:verificationToken", protect, verifyUser);

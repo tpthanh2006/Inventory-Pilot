@@ -612,6 +612,39 @@ const sendAutomatedEmail = asyncHandler(async (req, res) => {
   };
 });
 
+// Send Custom Email
+const sendCustomEmail = asyncHandler(async (req, res) => {
+  const { name, email, subject, message, templateId } = req.body;
+
+  if (!subject || !name || !email || !message || !templateId) {
+    return res.status(400).json({ message: "Missing email parameters" });
+  }
+
+  const sent_from = process.env.EMAIL_USER;
+  const send_to = "phuthanhtran26.work@gmail.com";
+  const reply_to = email;
+  
+  try {
+    await sendEmail(
+      send_to,
+      sent_from,
+      reply_to,
+      templateId,
+      {
+        name: name,
+        email: email,
+        subject: subject,
+        message: message,
+      }
+    );
+    
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error("Email Error:", error);
+    res.status(500).json({ message: "Email not sent, please try again" });
+  };
+});
+
 // Verify User
 const verifyUser = asyncHandler( async(req, res) => {
   const { verificationToken } = req.params;
@@ -793,6 +826,7 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   sendAutomatedEmail,
+  sendCustomEmail,
   sendLoginCode,
   loginWithCode,
   loginWithGoogle,
