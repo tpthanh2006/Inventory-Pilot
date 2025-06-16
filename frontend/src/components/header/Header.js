@@ -27,7 +27,7 @@ const Header = () => {
     <div className='--pad header'>
       <div className='--flex-between'>
         <h3>
-          <span className='--fw-thin'>Welcome, </span>
+          <span className='--fw-thin'>Welcome &nbsp;</span>
           <span className='--color-danger'>{user?.name}</span>
         </h3>
 

@@ -472,7 +472,6 @@ const forgotPassword = asyncHandler ( async(req, res) => {
   //res.send("Forgot Password");
 });
 
-
 // Reset Password
 const resetPassword = asyncHandler ( async(req, res) => {
   const { password } = req.body;
