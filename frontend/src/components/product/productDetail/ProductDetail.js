@@ -10,6 +10,21 @@ import { getProduct } from '../../../redux/features/product/productSlice';
 import { selectIsLoggedIn } from '../../../redux/features/auth/authSlice';
 import { SpinnerImg } from '../../loader/Loader';
 
+const options = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',  
+};
+
+const formattedDate = (prevDate) => {
+  const dateObject = { time: prevDate };
+
+  return new Date(dateObject.time).toLocaleString('en-US', options);
+}
+
 const ProductDetail = () => {
   useRedirectLoggedOutUser("/login");
   const dispatch = useDispatch();
@@ -92,11 +107,11 @@ const ProductDetail = () => {
             <hr/>
 
             <code className="--color-dark">
-              Created on: {product.createdAt.toLocaleString("en-US")}
+              Created on: {formattedDate(product.createdAt.toLocaleString("en-US"))}
             </code>
             <br/>
             <code className="--color-dark">
-              Last Updated: {product.updatedAt.toLocaleString("en-US")}
+              Last Updated: {formattedDate(product.updatedAt.toLocaleString("en-US"))}
             </code>
           </div>
         )}

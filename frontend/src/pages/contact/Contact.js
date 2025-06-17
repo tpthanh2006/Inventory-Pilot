@@ -78,11 +78,11 @@ const Contact = () => {
             <div className="icons">
               <span>
                 <FaPhoneAlt />
-                <p>(504)-457-1268</p>
+                <p>(504)-666-8888</p>
               </span>
               <span>
                 <FaEnvelope />
-                <p>tranpthanh2006@gmail.com</p>
+                <p>tpt06@gmail.com</p>
               </span>
               <span>
                 <GoLocation />
