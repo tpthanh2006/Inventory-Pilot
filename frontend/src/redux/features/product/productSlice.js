@@ -150,7 +150,7 @@ const productSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
 
-        console.log(action.payload);
+        //console.log(action.payload);
         state.products.push(action.payload);
         toast.success("Product added successfully");
       })

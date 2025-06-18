@@ -27,7 +27,7 @@ const AddProduct = () => {
 
   const handleInputChange = async (e) => {
     const {name, value} = e.target;
-    setProduct({...product, [name]: value});
+    setProduct({ ...product, [name]: value });
   };
 
   const handleImageChange = async (e) => {
@@ -50,14 +50,19 @@ const AddProduct = () => {
     formData.append("name", name);
     formData.append("sku", generateSKU(category));
     formData.append("category", category);
-    formData.append("quantity", quantity); // Fixed typo from 'quantiy'
+    formData.append("quantity", quantity);
     formData.append("price", price);
     formData.append("description", description);
     formData.append("image", productImage);
 
     console.log(...formData);
-    await dispatch(createProduct(formData));
-    navigate("/dashboard");
+
+    try {
+      await dispatch(createProduct(formData));
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

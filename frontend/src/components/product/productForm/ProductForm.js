@@ -1,4 +1,3 @@
-import React, { useRef } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -15,8 +14,6 @@ const ProductForm = ({
   handleImageChange, 
   saveProduct
 }) => {
-  const quillRef = useRef(null);
-
   return (
     <div className='add-product'>
       <Card cardClass={"card"}>
@@ -78,7 +75,6 @@ const ProductForm = ({
 
           <label>Product Description</label>
           <ReactQuill
-            ref={quillRef}
             theme="snow"
             value={description}
             onChange={setDescription}
