@@ -65,7 +65,7 @@ main {
 
 .sidebar-title {
   display: flex;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   justify-content: space-between;
   align-items: center;
 }
@@ -109,10 +109,34 @@ main {
   border: 1px solid #ccc;
   border-radius: 3px;
   margin-top: 5px;
-}
 
-.s-child:hover {
-  border: 1px solid var(--light-blue);
+  &:hover {
+    border: 1px solid var(--light-blue);
+  }
+
+  .sidebar-title {
+    display: flex;
+    font-size: 0.8rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sidebar-title span {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+    transition: all 0.5s;
+    font-size: 1.6rem;
+  }
+
+  .sidebar-title span .icon.close {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 15px;
+  }
 }
 
 a {

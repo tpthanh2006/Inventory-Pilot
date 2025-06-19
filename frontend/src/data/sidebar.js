@@ -1,4 +1,4 @@
-import { FaTh, FaRegChartBar, FaCommentAlt, FaHospitalUser } from "react-icons/fa";
+import { FaTh, FaUser, FaUserCog, FaRegChartBar, FaCommentAlt, FaHospitalUser } from "react-icons/fa";
 import { BiImageAdd } from "react-icons/bi";
 
 const menu = [
@@ -19,10 +19,12 @@ const menu = [
       {
         title: "Profile",
         path: "/profile",
+        icon: <FaUser />,
       },
       {
         title: "Edit Profile",
         path: "/edit-profile",
+        icon: <FaUserCog />,
       },
     ],
   },
