@@ -29,6 +29,20 @@
       outline: none;
     }
   }
+
+  .group {
+    border: 1px solid var(--light-blue);
+    padding: 5px;
+    margin-bottom: 5px;
+  }
+
+  .indicator {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 10px;
+    color: black;
+  }
 }
 
 .group {

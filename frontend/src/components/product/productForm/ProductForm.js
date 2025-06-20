@@ -1,8 +1,11 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { FaTimes } from 'react-icons/fa'
+import { BsCheck2All } from 'react-icons/bs'
 
 import './ProductForm.scss';
 import Card from '../../card/Card';
+import { useEffect, useState } from 'react';
 
 const ProductForm = ({
   product,
@@ -14,6 +17,27 @@ const ProductForm = ({
   handleImageChange, 
   saveProduct
 }) => {
+  const [descLength, setDescLength] = useState(true);
+
+  const timesIcon = <FaTimes color="red" size={15} />;
+  const checkIcon = <BsCheck2All color="green" size={15} />;
+  const switchIcon = (condition) => {
+    if (condition) {
+      return checkIcon;
+    };
+  
+    return timesIcon;
+  };
+
+  useEffect(() => {
+    if (description.length > 250) {
+      setDescLength(false);
+    } else {
+      setDescLength(true);
+    }
+    console.log(description.length);
+  }, [description]);
+
   return (
     <div className='add-product'>
       <Card cardClass={"card"}>
@@ -37,8 +61,9 @@ const ProductForm = ({
             )}
           </Card>
 
-          <label>Product Name</label>
+          <label>Product Name <span style={{ color: "red "}}>*</span></label>
           <input
+            required
             type="text"
             placeholder="Product Name"
             name="name"
@@ -46,8 +71,9 @@ const ProductForm = ({
             onChange={handleInputChange}
           />
 
-          <label>Product Category</label>
+          <label>Product Category <span style={{ color: "red "}}>*</span></label>
           <input
+            required
             type="text"
             placeholder="Product Category"
             name="category"
@@ -55,18 +81,20 @@ const ProductForm = ({
             onChange={handleInputChange}
           />
 
-          <label>Product Price</label>
+          <label>Product Price <span style={{ color: "red "}}>*</span></label>
           <input
-            type="text"
+            required
+            type="number"
             placeholder="Product Price"
             name="price"
             value={product?.price}
             onChange={handleInputChange}
           />
 
-          <label>Product Quantity</label>
+          <label>Product Quantity <span style={{ color: "red "}}>*</span></label>
           <input
-            type="text"
+            required
+            type="number"
             placeholder="Product Quantity"
             name="quantity"
             value={product?.quantity}
@@ -81,6 +109,16 @@ const ProductForm = ({
             modules={ProductForm.modules}
             formats={ProductForm.formats}
           />
+          <Card cardClass={"group"}>
+            <ul className="form-list"> 
+              <li>
+                <span className={"indicator"}>
+                  {switchIcon(descLength)}
+                  &nbsp; At Most 250 Characters
+                </span>
+              </li>
+            </ul>
+          </Card>
 
           <div className='--my'>
             <button type='submit' className='--btn --btn-primary'>

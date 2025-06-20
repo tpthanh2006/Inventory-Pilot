@@ -8,9 +8,14 @@ const createProduct = asyncHandler (async(req, res) => {
   const { name, sku, category, quantity, price, description } = req.body;
 
   // Validation
-  if (!name || !category || !quantity || !price || !description) {
+  if (!name || !category || !quantity || !price) {
     res.status(400);
     throw new Error("Please fill in all fields");
+  }
+
+  if (description.length > 250) {
+    res.status(400);
+    throw new Error("Description should not be longer than 250 characters");
   }
 
   // Handle File Upload
@@ -114,6 +119,11 @@ const updateProduct = asyncHandler(async(req, res) => {
   if (product.user.toString() !== req.user.id) {
     res.status(401);
     throw new Error("User not authorized");
+  }
+
+  if (description.length > 250) {
+    res.status(400);
+    throw new Error("Description should not be longer than 250 characters");
   }
 
   // Handle File Upload
