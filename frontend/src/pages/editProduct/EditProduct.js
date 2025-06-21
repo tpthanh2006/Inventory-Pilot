@@ -42,6 +42,10 @@ const EditProduct = () => {
   const handleInputChange = async (e) => {
     const {name, value} = e.target;
     setProduct({...product, [name]: value});
+
+    if (name === "description") {
+      setDescription(value);
+    };
   };
 
   const handleImageChange = async (e) => {

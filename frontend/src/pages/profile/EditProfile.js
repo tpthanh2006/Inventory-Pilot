@@ -44,7 +44,7 @@ const EditProfile = () => {
       navigate("/profile");
     }
 
-    console.log(bio.length);
+    //console.log(bio.length);
     setBioLength(bio.length <= 250);
   }, [bio, email, navigate])
   

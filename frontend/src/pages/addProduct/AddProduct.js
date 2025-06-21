@@ -23,11 +23,15 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const isLoading = useSelector(selectIsLoading);
 
-  const {name, category, price, quantity} = product;
+  const { name, category, price, quantity } = product;
 
   const handleInputChange = async (e) => {
     const {name, value} = e.target;
     setProduct({ ...product, [name]: value });
+
+    if (name === "description") {
+      setDescription(value);
+    };
   };
 
   const handleImageChange = async (e) => {

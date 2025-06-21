@@ -43,7 +43,7 @@ const Contact = () => {
       <div className='section'>
         <form onSubmit={sendEmail}>
           <Card cardClass='card'>
-            <label>Subject</label>
+            <label>Subject <span style={{ color: "red "}}>*</span></label>
             <input
               type="text"
               name="subject"
@@ -53,7 +53,7 @@ const Contact = () => {
               onChange={(e) => setSubject(e.target.value)}
             />
 
-            <label>Message</label>
+            <label>Message <span style={{ color: "red "}}>*</span></label>
             <textarea
               rows="10"
               cols="30"
