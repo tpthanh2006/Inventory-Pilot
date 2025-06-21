@@ -20,10 +20,12 @@ const EditProfile = () => {
   const { email } = user;
 
   useEffect(() => {
+    // console.log(user); -> Run this to fix "name": UNDEFINED
+
     if (!email) {
       navigate("/profile");
     }
-  }, [email, navigate])
+  }, [user, email, navigate])
 
   const initialState = {
     name: user?.name,
@@ -85,12 +87,11 @@ const EditProfile = () => {
         photo: profileImage ? imageURL : profile.photo
       };
 
-      const data = await authService.updateUser(formData);
-      console.log(data);
+      await authService.updateUser(formData);
+      //console.log(data);
       toast.success("User updated successfully");
       navigate("/profile");
       setIsLoading(false);
-
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -125,13 +126,13 @@ const EditProfile = () => {
                 <p>
                   <label>Email:</label>
                   <input
-                    type="text"
+                    type="email"
                     name="email"
                     value={profile?.email}
                     disabled
                   />
                   <br/>
-                  <code>Email can't be changed</code>
+                  <code style={{ color: "red" }}>Email can't be changed</code>
                 </p>
 
                 <p>

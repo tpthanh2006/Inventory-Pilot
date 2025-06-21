@@ -35,7 +35,7 @@ const ProductForm = ({
     } else {
       setDescLength(true);
     }
-    console.log(description.length);
+    //console.log(description.length);
   }, [description]);
 
   return (
