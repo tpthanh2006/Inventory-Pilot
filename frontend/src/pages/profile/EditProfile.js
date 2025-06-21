@@ -2,6 +2,8 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { FaTimes } from 'react-icons/fa'
+import { BsCheck2All } from 'react-icons/bs'
 
 import './Profile.scss'
 import { selectUser } from '../../redux/features/auth/authSlice';
@@ -13,19 +15,11 @@ import ChangePassword from '../../components/changePassword/ChangePassword';
 const EditProfile = () => {
   const navigate = useNavigate();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [profileImage, setProfileImage] = useState("");
+  const timesIcon = <FaTimes color="red" size={15} />;
+  const checkIcon = <BsCheck2All color="green" size={15} />;
 
   const user = useSelector(selectUser);
   const { email } = user;
-
-  useEffect(() => {
-    // console.log(user); -> Run this to fix "name": UNDEFINED
-
-    if (!email) {
-      navigate("/profile");
-    }
-  }, [user, email, navigate])
 
   const initialState = {
     name: user?.name,
@@ -35,11 +29,33 @@ const EditProfile = () => {
     photo: user?.photo,
   };
 
+  const [bio, setBio] = useState("");
+  const [bioLength, setBioLength] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState("");
   const [profile, setProfile] = useState(initialState);
+
+  useEffect(() => {
+    // console.log(user); -> Run this to fix "name": UNDEFINED
+
+    //setProfile(user);
+
+    if (!email) {
+      navigate("/profile");
+    }
+
+    console.log(bio.length);
+    setBioLength(bio.length <= 250);
+  }, [bio, email, navigate])
   
   const handleInputChange = async (e) => {
     const {name, value} = e.target;
-    setProfile({...profile, [name]: value});
+    setProfile({ ...profile, [name]: value });
+
+    if (name === "bio") {
+      setBio(value);
+      setBioLength(value.length <= 250);
+    };
   };
 
   const handleImageChange = async (e) => {
@@ -155,6 +171,16 @@ const EditProfile = () => {
                     rows="10"
                   />
                 </p>
+                <Card cardClass={"group"}>
+                  <ul className="form-list"> 
+                    <li>
+                      <span className={"indicator"}>
+                        { bioLength ? checkIcon : timesIcon }
+                        &nbsp; At Most 250 Characters
+                      </span>
+                    </li>
+                  </ul>
+                </Card>
 
                 <p>
                   <label>Photo:</label>
