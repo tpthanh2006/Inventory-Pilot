@@ -39,7 +39,7 @@ const productSchema = mongoose.Schema({
   description: {
     type: String,
     maxLength: [250, "Description must not be more than 250 characters"],
-    default: "New",
+    default: "New Product",
   },
 }, {
   timestamps: true,

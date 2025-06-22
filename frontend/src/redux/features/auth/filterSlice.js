@@ -11,10 +11,15 @@ const filterUserSlice = createSlice({
     FILTER_USERS(state, action) {
       const { users, search } = action.payload;
       
-      const tempUsers = users?.filter((user) => 
-        user.name.toLowerCase().includes(search.toLowerCase()) ||
-        user.email.toLowerCase().includes(search.toLowerCase())
-      ) || [];
+      const tempUsers = users?.filter((user) => {
+        if (!user) return false;
+
+        const name = user.name?.toLowerCase() || ''; 
+        const email = user.email?.toLowerCase() || '';
+        const searchTerm = search?.toLowerCase() || '';
+
+        return name.includes(searchTerm) || email.includes(searchTerm);
+      }) || [];
 
       state.filteredUsers = tempUsers;
     }

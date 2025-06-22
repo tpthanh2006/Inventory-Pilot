@@ -13,11 +13,11 @@ const createProduct = asyncHandler (async(req, res) => {
     throw new Error("Please fill in all fields");
   }
 
-  if (description.length > 250) {
+  if (description && description.length > 250) {
     res.status(400);
     throw new Error("Description should not be longer than 250 characters");
   }
-
+  
   // Handle File Upload
   let fileData = {};
   if (req.file) {
