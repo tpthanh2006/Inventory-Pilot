@@ -2,7 +2,7 @@ import ReactPaginate from 'react-paginate'
 import {AiOutlineEye} from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 import {FaEdit, FaTrashAlt} from 'react-icons/fa'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -55,9 +55,20 @@ const ProductList = ({products, isLoading}) => {
   // Begin Pagination
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
-  const [itemOffset, setItemOffset] = useState(0);
+  const [itemOffset, setItemOffset] = useState(0); // the # of items that've been skipped
   const itemsPerPage = 5;
 
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
+    setItemOffset(newOffset);
+  };
+
+  // Filter Products
+  useEffect(() => {
+    dispatch(FILTER_PRODUCTS({ products, search }));
+  }, [products, search, dispatch]);
+
+  // End Pagination
   useEffect(() => {
     if (filteredProducts) {
       const endOffset = itemOffset + itemsPerPage;
@@ -66,16 +77,6 @@ const ProductList = ({products, isLoading}) => {
       setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
     };
   }, [itemOffset, itemsPerPage, filteredProducts]);
-
-  const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredProducts.length;
-    setItemOffset(newOffset);
-  };
-
-  // End Pagination
-  useEffect(() => {
-    dispatch(FILTER_PRODUCTS({ products, search }));
-  }, [products, search, dispatch]);
 
   return (
     <div className="product-list">
@@ -119,7 +120,7 @@ const ProductList = ({products, isLoading}) => {
                     
                     return (
                       <tr key={_id}>
-                        <td>{index + 1}</td>
+                        <td>{itemOffset + index + 1}</td> {/* add itemOffset here to keep track of the right index */}
                         <td>{shortenText(name, 16)}</td>
                         <td>{category}</td>
                         <td>{"$"}{price}</td>
