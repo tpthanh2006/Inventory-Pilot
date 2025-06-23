@@ -117,7 +117,7 @@ const UserList = () => {
 
                     return (
                       <tr key={_id}>
-                        <td>{index + 1}</td>
+                        <td>{itemOffset + index + 1}</td>
                         <td>{name}</td>
                         <td>{email}</td>
                         <td>{role}</td>
