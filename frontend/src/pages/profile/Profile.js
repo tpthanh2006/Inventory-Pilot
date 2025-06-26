@@ -70,7 +70,7 @@ const Profile = () => {
                 <b>Role: </b> {profile?.role}
               </p>
 
-              <p>
+              <p className='bio-content'>
                 <b>Bio: </b> {profile?.bio}
               </p>
 

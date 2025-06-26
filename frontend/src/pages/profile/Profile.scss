@@ -16,9 +16,15 @@
       padding-right: 1rem;
       padding-left: 1rem;
     }
+
     span.profile-data {
       margin: 0 1rem;
+
+      .bio-content {
+        word-break: break-all;
+      }
     }
+
     span.profile-data > * {
       border-top: 1px solid #ccc;
       padding: 5px 0;
