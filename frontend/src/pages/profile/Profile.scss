@@ -3,8 +3,31 @@
     max-width: 700px;
     display: flex;
     justify-content: flex-start;
-
     padding: 1rem 0;
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1rem;
+
+      span {
+        &:first-child {
+          margin-right: auto; // Pushes first button to left
+        }
+        &:last-child {
+          margin-left: auto; // Pushes second button to right
+        }
+      }
+    }
+
+    hr {
+      margin: 0 1rem 2rem 1rem;
+      border: 0;
+      border-top: 1px solid #ccc;
+    }
 
     span.profile-photo {
       text-align: center;

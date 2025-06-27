@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa'
 import { BsCheck2All } from 'react-icons/bs'
 
@@ -120,84 +120,100 @@ const EditProfile = () => {
       {isLoading && <Loader />}
 
       <Card cardClass={"card --flex-dir-column"}>
-            <span className='profile-photo'>
-              <img
-                src={user?.photo}
-                alt="Avatar"
+        {/*
+        <div className="profile-header">
+          <span>
+            <Link to="/dashboard" className="--btn --btn-primary">
+              Dashboard
+            </Link>
+          </span>
+          <span>
+            <Link to="/profile" className="--btn --btn-primary">
+              View Profile
+            </Link>
+          </span>
+        </div>
+        <hr />
+        */}
+
+        <span className='profile-photo'>
+          <img
+            src={user?.photo}
+            alt="Avatar"
+          />
+        </span>
+
+        <form className='--form-control --m' onSubmit={saveProfile}>
+          <span className="profile-data">
+            <p>
+              <label>Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={profile?.name}
+                onChange={handleInputChange}
               />
-            </span>
+            </p>
 
-            <form className='--form-control --m' onSubmit={saveProfile}>
-              <span className="profile-data">
-                <p>
-                  <label>Name:</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={profile?.name}
-                    onChange={handleInputChange}
-                  />
-                </p>
+            <p>
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={profile?.email}
+                disabled
+              />
+              <br/>
+              <code style={{ color: "red" }}>Email can't be changed</code>
+            </p>
 
-                <p>
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={profile?.email}
-                    disabled
-                  />
-                  <br/>
-                  <code style={{ color: "red" }}>Email can't be changed</code>
-                </p>
+            <p>
+              <label>Phone:</label>
+              <input
+                type="text"
+                name="phone"
+                value={profile?.phone}
+                onChange={handleInputChange}
+              />
+            </p>
 
-                <p>
-                  <label>Phone:</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={profile?.phone}
-                    onChange={handleInputChange}
-                  />
-                </p>
+            <p>
+              <label>Bio:</label>
+              <textarea
+                name="bio"
+                value={profile?.bio}
+                onChange={handleInputChange}
+                cols="30"
+                rows="10"
+              />
+            </p>
+            <Card cardClass={"group"}>
+              <ul className="form-list"> 
+                <li>
+                  <span className={"indicator"}>
+                    { bioLength ? checkIcon : timesIcon }
+                    &nbsp; At Most 250 Characters
+                  </span>
+                </li>
+              </ul>
+            </Card>
 
-                <p>
-                  <label>Bio:</label>
-                  <textarea
-                    name="bio"
-                    value={profile?.bio}
-                    onChange={handleInputChange}
-                    cols="30"
-                    rows="10"
-                  />
-                </p>
-                <Card cardClass={"group"}>
-                  <ul className="form-list"> 
-                    <li>
-                      <span className={"indicator"}>
-                        { bioLength ? checkIcon : timesIcon }
-                        &nbsp; At Most 250 Characters
-                      </span>
-                    </li>
-                  </ul>
-                </Card>
+            <p>
+              <label>Photo:</label>
+              <input
+                type="file"
+                name="image"
+                onChange={handleImageChange}
+              />
+            </p>
 
-                <p>
-                  <label>Photo:</label>
-                  <input
-                    type="file"
-                    name="image"
-                    onChange={handleImageChange}
-                  />
-                </p>
-
-                <div>=
-                  <button className='--btn --btn-primary'>
-                    Edit Profile
-                  </button>
-                </div>
-              </span>
-            </form>
+            <div>=
+              <button className='--btn --btn-primary'>
+                Edit Profile
+              </button>
+            </div>
+          </span>
+        </form>
       </Card>
       <br/>
       <ChangePassword />

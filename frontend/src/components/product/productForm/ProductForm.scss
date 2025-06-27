@@ -4,7 +4,23 @@
     width: 100%;
     max-width: 500px;
     padding: 1rem;
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .back-to-dashboard {
+        align-self: flex-start;
+      }
+
+      .view-products {
+        align-self: flex-end;
+      }
+    }
   }
+  
   form {
     label {
       display: block;

@@ -1,7 +1,7 @@
 import DOMPurify from "dompurify";
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import './ProductDetail.scss';
 import Card from '../../card/Card';
@@ -9,6 +9,7 @@ import useRedirectLoggedOutUser from '../../../customHook/useRedirectLoggedOutUs
 import { getProduct } from '../../../redux/features/product/productSlice';
 import { selectIsLoggedIn } from '../../../redux/features/auth/authSlice';
 import { SpinnerImg } from '../../loader/Loader';
+
 
 const options = {
   year: 'numeric',
@@ -60,6 +61,21 @@ const ProductDetail = () => {
 
         {product && (
           <div className='detail'>
+            <div className="detail-header">
+              <span className="back-to-dashboard">
+                <Link className='--btn --btn-danger' to={`/dashboard`}>
+                  Dashboard
+                </Link>
+              </span>
+            
+              <span className="edit-product">
+                <Link className='--btn --btn-danger' to={`/edit-product/${id}`}>
+                  Edit Product
+                </Link>
+              </span>
+            </div>
+            <hr/>
+
             <Card cardClass="group">
               {product?.image ? (
                 <img

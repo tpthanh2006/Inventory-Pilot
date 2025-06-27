@@ -6,6 +6,7 @@ import { BsCheck2All } from 'react-icons/bs'
 import './ProductForm.scss';
 import Card from '../../card/Card';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const ProductForm = ({
   product,
@@ -41,6 +42,20 @@ const ProductForm = ({
   return (
     <div className='add-product'>
       <Card cardClass={"card"}>
+        <div className="form-header">
+          <span className="back-to-dashboard">
+            <Link className='--btn --btn-danger' to={`/dashboard`}>
+              Return
+            </Link>
+          </span>
+            
+          <span className="view-products">
+            <Link className='--btn --btn-danger' to={`/dashboard`}>
+              View All Products
+            </Link>
+          </span>
+        </div>
+
         <form onSubmit={saveProduct}>
           <Card cardClass={"group"}>
             <label>Product Image</label>

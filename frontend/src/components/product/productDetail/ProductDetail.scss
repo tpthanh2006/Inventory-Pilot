@@ -2,12 +2,28 @@
   margin-bottom: 5rem;
   width: 100%;
   max-width: 500px;
+
   .card {
     width: 100%;
     max-width: 500px;
     padding: 1rem;
   }
   .detail {
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .back-to-dashboard {
+        align-self: flex-start;
+      }
+
+      .edit-product {
+        align-self: flex-end;
+      }
+    }
+    
     & > * {
       margin-bottom: 1rem;
     }
