@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
+import "./EditProduct.scss";
 import Loader from '../../components/loader/Loader';
 import ProductForm from '../../components/product/productForm/ProductForm';
 import { getProduct, getProducts, selectIsLoading, selectProduct, updateProduct } from '../../redux/features/product/productSlice';
+import Card from '../../components/card/Card';
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -79,6 +81,23 @@ const EditProduct = () => {
     <div>
       {isLoading && <Loader/>}
       <h3 className='--mt'>Edit Product</h3>
+
+      <Card cardClass={"card"}>
+        <div className="card-header">
+          <span className="product-details">
+            <Link className='--btn --btn-danger' to={`/product-detail/${id}`}>
+              Return
+            </Link>
+          </span>
+            
+          <span className="dashboard-again">
+            <Link className='--btn --btn-danger' to={`/dashboard`}>
+              View All Products
+            </Link>
+          </span>
+        </div>
+      </Card>
+      
       <ProductForm
         product={product}
         productImage={productImage}

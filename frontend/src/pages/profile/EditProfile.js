@@ -119,23 +119,23 @@ const EditProfile = () => {
     <div className='profile --my2'>
       {isLoading && <Loader />}
 
-      <Card cardClass={"card --flex-dir-column"}>
-        {/*
+      <Card cardClass={"card-nav"}>
         <div className="profile-header">
-          <span>
-            <Link to="/dashboard" className="--btn --btn-primary">
-              Dashboard
-            </Link>
-          </span>
-          <span>
-            <Link to="/profile" className="--btn --btn-primary">
+          <span className="profile-details">
+            <Link to="/profile" className="--btn --btn-danger">
               View Profile
             </Link>
           </span>
-        </div>
-        <hr />
-        */}
 
+          <span className="all-products">
+            <Link to="/dashboard" className="--btn --btn-danger">
+              Manage Products
+            </Link>
+          </span>
+        </div>
+      </Card>
+
+      <Card cardClass={"card --flex-dir-column"}>
         <span className='profile-photo'>
           <img
             src={user?.photo}

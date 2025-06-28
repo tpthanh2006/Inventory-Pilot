@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import "./AddProduct.scss";
 import Loader from '../../components/loader/Loader';
 import ProductForm from '../../components/product/productForm/ProductForm';
 import { createProduct, selectIsLoading } from '../../redux/features/product/productSlice';
+import Card from '../../components/card/Card';
 
 const initialState = {
   name: "",
@@ -73,6 +75,23 @@ const AddProduct = () => {
     <div>
       {isLoading && <Loader/>}
       <h3 className='--mt'>Add New Product</h3>
+
+      <Card cardClass={"card"}>
+        <div className="form-header">
+          <span className="back-to-dashboard">
+            <Link className='--btn --btn-danger' to={`/dashboard`}>
+              Dashboard
+            </Link>
+          </span>
+            
+          <span className="view-products">
+            <Link className='--btn --btn-danger' to={`/dashboard`}>
+              View All Products
+            </Link>
+          </span>
+        </div>
+      </Card>
+
       <ProductForm
         product={product}
         productImage={productImage}
